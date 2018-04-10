@@ -1,0 +1,5 @@
+#ignore the aux file
+
+*.aux
+
+*.DS_Store

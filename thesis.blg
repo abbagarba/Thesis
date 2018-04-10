@@ -1,0 +1,14 @@
+[0] Config.pm:302> INFO - This is Biber 2.10
+[0] Config.pm:305> INFO - Logfile is 'thesis.blg'
+[48] biber-darwin:313> INFO - === Tue Apr 10, 2018, 12:31:26
+[75] Biber.pm:371> INFO - Reading 'thesis.bcf'
+[175] Biber.pm:857> INFO - Found 2 citekeys in bib section 0
+[188] Biber.pm:3976> INFO - Processing section 0
+[202] Biber.pm:4136> INFO - Looking for bibtex format file 'thesis.bib' for section 0
+[203] bibtex.pm:1490> INFO - LaTeX decoding ...
+[209] bibtex.pm:1306> INFO - Found BibTeX data source 'thesis.bib'
+[274] UCollate.pm:68> INFO - Overriding locale 'zh__pinyin' defaults 'variable = shifted' with 'variable = non-ignorable'
+[274] UCollate.pm:68> INFO - Overriding locale 'zh__pinyin' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[274] Biber.pm:3804> INFO - Sorting list 'ecnty/global//global/global' of type 'entry' with template 'ecnty' and locale 'zh__pinyin'
+[279] bbl.pm:617> INFO - Writing 'thesis.bbl' with encoding 'UTF-8'
+[280] bbl.pm:720> INFO - Output to thesis.bbl
