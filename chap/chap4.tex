@@ -146,9 +146,16 @@ Pk_{cmp} = sha_{512}(Pk_A||example.com)
 
 在得到基准公钥后，验证节点计算公钥$Pk_v$与基准公钥$Pk_{cmp}$之间的海明距离，如果其距离小于某一个值$d$，就具有验证该次绑定的权力，可以向区块链提交验证结果。为使得能够有住够多的验证者，让身份绑定过程可以更加高效的进行，随着时间的推移，对海明距离的约束$d$将会逐渐变大。
 
+假设$dist_ham(a,b)$表示两个数a和b之间的海明距离，初始时的海明距离要求为$d$，每隔时间$t_adjust$将完成一次海明距离的调整，从验证者开始选取已经过过去$\Delta_t$时间，那么一个拥有公钥$Pk$的验证者，将可以通过以下公式来判断：
 
 
-[需要展开一下]
+\begin{equation}\label{cmpCondition}
+dist_ham(Pk, pk_{cmp}) <= d + \Delta_t / t_{adjust}m
+\end{equation}
+
+如果公式\ref{cmpCondition}成立，那么该公钥的拥有者将具有成为验证者的权利。
+
+
 
 
 \subsection{检举的工作机制}
