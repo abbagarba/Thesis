@@ -1,18 +1,18 @@
 [0] Config.pm:302> INFO - This is Biber 2.10
 [0] Config.pm:305> INFO - Logfile is 'thesis.blg'
-[39] biber-darwin:313> INFO - === Wed May  2, 2018, 13:31:56
-[63] Biber.pm:371> INFO - Reading 'thesis.bcf'
-[164] Biber.pm:857> INFO - Found 39 citekeys in bib section 0
-[179] Biber.pm:3976> INFO - Processing section 0
-[191] Biber.pm:4136> INFO - Looking for bibtex format file 'thesis.bib' for section 0
-[193] bibtex.pm:1490> INFO - LaTeX decoding ...
-[245] bibtex.pm:1306> INFO - Found BibTeX data source 'thesis.bib'
-[247] Utils.pm:193> WARN - Duplicate entry key: 'matsumoto2016ikp' in file 'thesis.bib', skipping ...
-[249] Utils.pm:193> WARN - Duplicate entry key: 'laurie2013certificate' in file 'thesis.bib', skipping ...
-[249] Utils.pm:193> WARN - Duplicate entry key: 'evans2015public' in file 'thesis.bib', skipping ...
-[518] UCollate.pm:68> INFO - Overriding locale 'zh__pinyin' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[519] UCollate.pm:68> INFO - Overriding locale 'zh__pinyin' defaults 'variable = shifted' with 'variable = non-ignorable'
-[519] Biber.pm:3804> INFO - Sorting list 'ecnty/global//global/global' of type 'entry' with template 'ecnty' and locale 'zh__pinyin'
-[563] bbl.pm:617> INFO - Writing 'thesis.bbl' with encoding 'UTF-8'
-[577] bbl.pm:720> INFO - Output to thesis.bbl
-[577] Biber.pm:110> INFO - WARNINGS: 3
+[41] biber-darwin:313> INFO - === Wed May  2, 2018, 23:39:13
+[67] Biber.pm:371> INFO - Reading 'thesis.bcf'
+[167] Biber.pm:857> INFO - Found 39 citekeys in bib section 0
+[180] Biber.pm:3976> INFO - Processing section 0
+[193] Biber.pm:4136> INFO - Looking for bibtex format file 'thesis.bib' for section 0
+[194] bibtex.pm:1490> INFO - LaTeX decoding ...
+[246] bibtex.pm:1306> INFO - Found BibTeX data source 'thesis.bib'
+[249] Utils.pm:193> WARN - Duplicate entry key: 'matsumoto2016ikp' in file 'thesis.bib', skipping ...
+[250] Utils.pm:193> WARN - Duplicate entry key: 'laurie2013certificate' in file 'thesis.bib', skipping ...
+[251] Utils.pm:193> WARN - Duplicate entry key: 'evans2015public' in file 'thesis.bib', skipping ...
+[537] UCollate.pm:68> INFO - Overriding locale 'zh__pinyin' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[538] UCollate.pm:68> INFO - Overriding locale 'zh__pinyin' defaults 'variable = shifted' with 'variable = non-ignorable'
+[538] Biber.pm:3804> INFO - Sorting list 'ecnty/global//global/global' of type 'entry' with template 'ecnty' and locale 'zh__pinyin'
+[585] bbl.pm:617> INFO - Writing 'thesis.bbl' with encoding 'UTF-8'
+[601] bbl.pm:720> INFO - Output to thesis.bbl
+[602] Biber.pm:110> INFO - WARNINGS: 3
