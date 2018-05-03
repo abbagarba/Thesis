@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99998 (TeX Live 2017) (preloaded format=xelatex 2018.3.12)  3 MAY 2018 11:39
+This is XeTeX, Version 3.14159265-2.6-0.99998 (TeX Live 2017) (preloaded format=xelatex 2018.3.12)  3 MAY 2018 20:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2747,15 +2747,7 @@ e
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 14.05249pt on input line 29.
  [2]
-Overfull \hbox (8.3005pt too wide) in paragraph at lines 46--49
-[]\TU/SimSun(0)/m/n/12.045 一 些 方 案 希 望 通 过 域 名 的 限 制 来 削 弱 \T1/ntxtlf/m/n/12.04
-5 CA \TU/SimSun(0)/m/n/12.045 的 权 利，| \T1/ntxtlf/m/n/12.045 HTTP Pub-lic Key Pi
-n-ning |\TU/SimSun(0)/m/n/12.045 （\T1/ntxtlf/m/n/12.045 HPKP\TU/SimSun(0)/m/n/1
-2.045 ）|$[]$
- []
-
-
-Underfull \vbox (badness 1484) has occurred while \output is active []
+Underfull \vbox (badness 2903) has occurred while \output is active []
 
  [3]
 [4]) [5]
@@ -2829,8 +2821,8 @@ File: img/Classification_of_PKI_proposals.pdf Graphic file (type pdf)
 File: img/art.pdf Graphic file (type pdf)
 <use img/art.pdf>
  [22]
-Overfull \hbox (9.90471pt too wide) in paragraph at lines 86--87
-[]\TU/SimSun(0)/m/n/12.045 根 据 需 要 的 绑 定 信 息 $\LMS/ntxsy/m/n/12.045 ¹\OML/ntxmi
+Overfull \hbox (9.90471pt too wide) in paragraph at lines 87--88
+[]\TU/SimSun(0)/m/n/12.045 根 据 需 要 绑 定 的 信 息 $\LMS/ntxsy/m/n/12.045 ¹\OML/ntxmi
 /m/it/12.045 Pk[]; example:com\LMS/ntxsy/m/n/12.045 º$\TU/SimSun(0)/m/n/12.045 
 ，|  计 算 $\LMS/ntxsy/m/n/12.045 ¹\OML/ntxmi/m/it/12.045 Path; Chal\LMS/ntxsy/m/n
 /12.045 º \U/ntxmia/m/it/12.045 = \OML/ntxmi/m/it/12.045 F\LMS/ntxsy/m/n/12.045
@@ -2838,7 +2830,7 @@ Overfull \hbox (9.90471pt too wide) in paragraph at lines 86--87
  []
 
 
-Overfull \hbox (36.57246pt too wide) in paragraph at lines 86--87
+Overfull \hbox (36.57246pt too wide) in paragraph at lines 87--88
 \TU/SimSun(0)/m/n/12.045 放 置 在 自 己 控 制 的 域 名 下，|  即 访 问 $\OML/ntxmi/m/it/12.045
  example:com\LMS/ntxsy/m/n/12.045 ^^9d\OML/ntxmi/m/it/12.045 Path$ \TU/SimSun(0
 )/m/n/12.045 即 可 获 取 到 $\OML/ntxmi/m/it/12.045 Vcode \U/ntxmia/m/it/12.045 = \O
@@ -2846,23 +2838,23 @@ ML/ntxmi/m/it/12.045 Sign[]\LMS/ntxsy/m/n/12.045 ¹\OML/ntxmi/m/it/12.045 Chal\L
 MS/ntxsy/m/n/12.045 º$
  []
 
-
-Overfull \hbox (33.99042pt too wide) in paragraph at lines 87--88
+[23]
+Overfull \hbox (33.99042pt too wide) in paragraph at lines 88--89
 []\TU/SimSun(0)/m/n/12.045 验 证 者 $\OML/ntxmi/m/it/12.045 B$ \TU/SimSun(0)/m/n/1
 2.045 访 问 域 名 验 证 \T1/ntxtlf/m/n/12.045 A \TU/SimSun(0)/m/n/12.045 是 否 正 确 操 作，
 |  如 果 不，|  发 送 检 举 交 易 $\OML/ntxmi/m/it/12.045 Tx[]\LMS/ntxsy/m/n/12.045 ¹\OML
 /ntxmi/m/it/12.045 Pk[]; example:com\LMS/ntxsy/m/n/12.045 º$
  []
 
-[23]
-Overfull \hbox (10.84784pt too wide) in paragraph at lines 91--92
+
+Overfull \hbox (10.84784pt too wide) in paragraph at lines 92--93
 []\TU/SimSun(0)/m/n/12.045 在 该 绑 定 过 程 中，|  首 先 需 要 绑 定 者 将 绑 定 信 息 自 己 的 $\OML
 /ntxmi/m/it/12.045 Pk[]$ \TU/SimSun(0)/m/n/12.045 和 自 己 的 域 名 $\OML/ntxmi/m/it/
 12.045 example:com$
  []
 
 [24]
-Overfull \hbox (38.06166pt too wide) in paragraph at lines 128--129
+Overfull \hbox (38.06166pt too wide) in paragraph at lines 129--130
 []\T1/ntxtlf/m/n/12.045 A \TU/SimSun(0)/m/n/12.045 获 取 $\OML/ntxmi/m/it/12.045 
 Tx[]$ \TU/SimSun(0)/m/n/12.045 所 在 位 置 区 块 信 息 $\OML/ntxmi/m/it/12.045 Info[]$\
 TU/SimSun(0)/m/n/12.045 ，|  并 根 据 其 计 算 值 $\LMS/ntxsy/m/n/12.045 ¹\OML/ntxmi/m/
@@ -2872,7 +2864,7 @@ m/it/12.045 F\LMS/ntxsy/m/n/12.045 ¹\OML/ntxmi/m/it/12.045 Info[]\LMS/ntxsy/m/n
  []
 
 
-Overfull \hbox (36.57246pt too wide) in paragraph at lines 128--129
+Overfull \hbox (36.57246pt too wide) in paragraph at lines 129--130
 \TU/SimSun(0)/m/n/12.045 放 置 在 自 己 控 制 的 域 名 下，|  及 访 问 $\OML/ntxmi/m/it/12.045
  example:com\LMS/ntxsy/m/n/12.045 ^^9d\OML/ntxmi/m/it/12.045 Path$ \TU/SimSun(0
 )/m/n/12.045 即 可 获 取 到 $\OML/ntxmi/m/it/12.045 Vcode \U/ntxmia/m/it/12.045 = \O
@@ -2881,17 +2873,17 @@ MS/ntxsy/m/n/12.045 º$
  []
 
 
-Underfull \vbox (badness 2310) has occurred while \output is active []
+Underfull \vbox (badness 1584) has occurred while \output is active []
 
  [25]
-[26]
-Underfull \vbox (badness 6300) has occurred while \output is active []
+Overfull \hbox (3.69792pt too wide) in paragraph at lines 171--172
+\TU/SimSun(0)/m/n/12.045 公 钥 $\OML/ntxmi/m/it/12.045 Pk[]$\TU/SimSun(0)/m/n/12.
+045 ，|  不 同 的 是 一 个 需 要 提 供 验 证 内 容 $\OML/ntxmi/m/it/12.045 Vcode$\TU/SimSun(0)
+/m/n/12.045 ，|  另 外 一 个 需 要 提 供 域 名 $\OML/ntxmi/m/it/12.045 example:com$\TU/Sim
+Sun(0)/m/n/12.045 。|
+ []
 
- [27]
-
-LaTeX Warning: Reference `cmpConditon' on page 28 undefined on input line 220.
-
-[28]
+[26] [27] [28]
 File: img/module.pdf Graphic file (type pdf)
 <use img/module.pdf>
  [29] [30]) [31]
@@ -2987,9 +2979,6 @@ Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 147.
 Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 147.
 
 
-LaTeX Warning: There were undefined references.
-
-
 LaTeX Warning: There were multiply-defined labels.
 
 Package logreq Info: Writing requests to 'thesis.run.xml'.
@@ -2997,10 +2986,10 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 51537 strings out of 493007
- 1009909 string characters out of 6134605
+ 51536 strings out of 493007
+ 1009895 string characters out of 6134605
  1422773 words of memory out of 5000000
- 54763 multiletter control sequences out of 15000+600000
+ 54762 multiletter control sequences out of 15000+600000
  634391 words of font info for 150 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  64i,12n,102p,10453b,4622s stack positions out of 5000i,500n,10000p,200000b,80000s
