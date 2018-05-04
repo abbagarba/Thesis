@@ -1,7 +1,7 @@
 % Copyright (c) 2014,2016 Casper Ti. Vector
 % Public domain.
 
-\chapter{基于区块链的命名实体鉴权方案设计与实现}
+\chapter{基于区块链的命名实体鉴权方案设计}
 
 本章节将阐述基于区块链的命名实体鉴权方案，首先从系统设计的整体架构出发，描述本系统中包含的系统角色和架构；然后对鉴权方案进行详细阐述，并理论论证鉴权方案的有效性和安全性；最后对系统实现的各个模块进行描述。
 
@@ -171,7 +171,7 @@ dist_{ham}(Sha_{512}(Sig_{Pr_C}(Info_{curBlock})), hash_{cmp}) <= d + \Delta_t /
 对于身份绑定请求和检举信息的确认，同时都要提交自身的公钥$Pk_C$和绑定者的公钥$Pk_A$，不同的是一个需要提供验证内容$Vcode$，另外一个需要提供域名$example.com$。在此基础上，还需要验证者提供一个基于容量证明的内容，保证身份不是随意产生的，而是付出一定代价维护的。假设需要提供的容量证明内容为$prf$，其需要满足以下条件：
 
 \begin{equation}\label{pocVerify}
-Verify(Pk_C, prf) = Sha_512(Pk_A||Vcode/example.com||Info_{curBlock})
+Verify(Pk_C, prf) = Sha_{512}(Pk_A||Vcode/example.com||Info_{curBlock})
 \end{equation}
 
 其中$Verify$是容量证明的验证函数。
