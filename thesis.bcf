@@ -1994,14 +1994,6 @@
     <bcf:citekey order="54">test-zh</bcf:citekey>
     <bcf:citekey order="55">test-en</bcf:citekey>
     <bcf:citekey order="55">test-zh</bcf:citekey>
-    <bcf:citekey order="56">test-en</bcf:citekey>
-    <bcf:citekey order="57">test-zh</bcf:citekey>
-    <bcf:citekey order="58">test-en</bcf:citekey>
-    <bcf:citekey order="58">test-zh</bcf:citekey>
-    <bcf:citekey order="59">test-en</bcf:citekey>
-    <bcf:citekey order="60">test-zh</bcf:citekey>
-    <bcf:citekey order="61">test-en</bcf:citekey>
-    <bcf:citekey order="61">test-zh</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
