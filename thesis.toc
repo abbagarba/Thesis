@@ -16,7 +16,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.1}比特币}{7}{section.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.2}共识机制}{9}{section.2.2}
+\contentsline {section}{\numberline {2.2}共识机制}{8}{section.2.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.3}智能合约}{10}{section.2.3}
 \defcounter {refsection}{0}\relax 
@@ -40,11 +40,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.4}已有的改善措施}{18}{section.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{以客户端为中心的方案}{18}{subsubsection*.10}
+\contentsline {subsubsection}{\numberline {3.4.0.1}以客户端为中心的方案}{18}{subsubsection.3.4.0.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{以CA为中心的方案}{19}{subsubsection*.11}
+\contentsline {subsubsection}{\numberline {3.4.0.2}以CA为中心的方案}{19}{subsubsection.3.4.0.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{以域名为中心的方案}{19}{subsubsection*.12}
+\contentsline {subsubsection}{\numberline {3.4.0.3}以域名为中心的方案}{19}{subsubsection.3.4.0.3}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {第四章\hspace {.3em}}基于区块链的命名实体鉴权方案设计}{21}{chapter.4}
 \defcounter {refsection}{0}\relax 
@@ -68,15 +68,15 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {4.3}安全性分析}{29}{section.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{站点对域名服务器的控制权}{29}{subsubsection*.16}
+\contentsline {subsubsection}{\numberline {4.3.0.1}站点对域名服务器的控制权}{29}{subsubsection.4.3.0.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{验证交易的有效性}{30}{subsubsection*.17}
+\contentsline {subsubsection}{\numberline {4.3.0.2}验证交易的有效性}{30}{subsubsection.4.3.0.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{女巫攻击}{30}{subsubsection*.18}
+\contentsline {subsubsection}{\numberline {4.3.0.3}女巫攻击}{30}{subsubsection.4.3.0.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{防定点攻击}{30}{subsubsection*.19}
+\contentsline {subsubsection}{\numberline {4.3.0.4}防定点攻击}{30}{subsubsection.4.3.0.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{验证时间的选择}{31}{subsubsection*.20}
+\contentsline {subsubsection}{\numberline {4.3.0.5}验证时间的选择}{31}{subsubsection.4.3.0.5}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {第五章\hspace {.3em}}基于区块链的命名实体鉴权系统设计与实现}{33}{chapter.5}
 \defcounter {refsection}{0}\relax 
@@ -92,27 +92,27 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.2.1}智能合约}{36}{subsection.5.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块功能}{36}{subsubsection*.24}
+\contentsline {subsubsection}{\numberline {5.2.1.1}模块功能}{36}{subsubsection.5.2.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块接口}{37}{subsubsection*.25}
+\contentsline {subsubsection}{\numberline {5.2.1.2}模块接口}{37}{subsubsection.5.2.1.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.2.2}域名客户端}{38}{subsection.5.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块功能}{38}{subsubsection*.26}
+\contentsline {subsubsection}{\numberline {5.2.2.1}模块功能}{38}{subsubsection.5.2.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块接口}{39}{subsubsection*.27}
+\contentsline {subsubsection}{\numberline {5.2.2.2}模块接口}{39}{subsubsection.5.2.2.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.2.3}验证节点客户端}{39}{subsection.5.2.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块功能}{39}{subsubsection*.28}
+\contentsline {subsubsection}{\numberline {5.2.3.1}模块功能}{39}{subsubsection.5.2.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块接口}{40}{subsubsection*.29}
+\contentsline {subsubsection}{\numberline {5.2.3.2}模块接口}{40}{subsubsection.5.2.3.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.2.4}游览器验证插件}{40}{subsection.5.2.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块功能}{40}{subsubsection*.30}
+\contentsline {subsubsection}{\numberline {5.2.4.1}模块功能}{40}{subsubsection.5.2.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块接口}{40}{subsubsection*.31}
+\contentsline {subsubsection}{\numberline {5.2.4.2}模块接口}{40}{subsubsection.5.2.4.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {5.3}系统测试}{41}{section.5.3}
 \defcounter {refsection}{0}\relax 
@@ -120,12 +120,12 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.3.2}功能测试}{41}{subsection.5.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{模块接口}{41}{subsubsection*.33}
+\contentsline {subsubsection}{\numberline {5.3.2.1}模块接口}{41}{subsubsection.5.3.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{总结与展望}{43}{chapter*.34}
+\contentsline {chapter}{总结与展望}{43}{chapter*.17}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{参考文献}{45}{appendix*.36}
+\contentsline {chapter}{参考文献}{45}{appendix*.19}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{致谢}{49}{appendix*.37}
+\contentsline {chapter}{致谢}{49}{appendix*.20}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{北京大学学位论文原创性声明和使用授权说明}{51}{appendix*.38}
+\contentsline {chapter}{北京大学学位论文原创性声明和使用授权说明}{51}{appendix*.21}
