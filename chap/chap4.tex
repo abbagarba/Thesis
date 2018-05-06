@@ -78,7 +78,14 @@
 
 \noindent\textbf{流程}
 
-绑定的具体流程包含以下四步：
+绑定的具体流程如图\ref{fig:time_based_workflow}所示，包含以下几步：
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[width = 0.9\textwidth]{img/time_based_workflow}
+ 	\caption{基于时间的方案流程图}\label{fig:time_based_workflow}
+\end{figure}
+
 
 \begin{enumerate}
 	\item $A$发布绑定交易$Tx_{req}(Pk_A, example.com)$到区块链上;
@@ -86,6 +93,7 @@
 	\item 验证者$B$访问域名验证A是否正确操作，如果不，发送检举交易$Tx_{rep}(Pk_A, example.com)$到区块链;
 	\item $A$保持验证时长$T$后，可停止该验证服务，完成绑定。
 \end{enumerate}
+
 
 在该绑定过程中，首先需要绑定者将绑定信息自己的$Pk_A$和自己的域名$example.com$发布到区块链上，将绑定身份信息展现给所有的验证节点，并根据函数$F$生成相关验证内容。我们选择哈希函数$sha256$作为函数原型，将$Pk_A$和$example.com$直接拼接后作为输入，将计算得到的256位哈希值前128位赋值给$Path$、后128位赋值给$Chal$，并且使用自己的私钥对$Chal$进行签名：
 
@@ -120,7 +128,13 @@ Vcode = Sign_{Sk_A}(Chal)
 
 \noindent\textbf{流程}
 
-基于验证次数的身份绑定方案相比于基于验证时间的方案需要验证者更多的和区块链进行交互，在验证过程中需要将验证是否通过的信息提交到区块链上去，具体流程如下：
+基于验证次数的身份绑定方案相比于基于验证时间的方案需要验证者更多的和区块链进行交互，在验证过程中需要将验证是否通过的信息提交到区块链上去，绑定流程如图\ref{fig:count_based_workflow}所示，详细流程如下：
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[width = 0.9\textwidth]{img/count_based_workflow}
+ 	\caption{基于验证次数的方案流程图}\label{fig:count_based_workflow}
+\end{figure}
 
 \begin{enumerate}
 	\item $A$发布绑定交易$Tx_{req}(Pk_A, example.com)$到区块链上;
@@ -149,9 +163,7 @@ hash_{cmp} = sha_{512}(Pk_A||example.com||Info_{rcvBlock})
 dist_{ham}(Sha_{512}(Sig_{Pr_C}(Info_{curBlock})), hash_{cmp}) <= d + \Delta_t / t_{adjust}
 \end{equation}
 
-!!!!!sig是 unique signature
-
-其中$dist_{ham}(a,b)$表示两个数a和b之间的海明距离；$Pr_C$表示验证节点的私钥；$d$表示初始时的海明距离要求；$\Delta_t$表示从开始收到验证请求已经过去的时间；$t_{adjust}$调整海明距离的时间；$Info_{curBlock}$表示最新块的相关信息。
+其中$dist_{ham}(a,b)$表示两个数a和b之间的海明距离；$Pr_C$表示验证节点的私钥；$d$表示初始时的海明距离要求；$\Delta_t$表示从开始收到验证请求已经过去的时间；$t_{adjust}$调整海明距离的时间；$Info_{curBlock}$表示最新块的相关信息；$Sig$为一个unique signature算法。
 
 以上判断方法使得一个验证者可以在每产生一个区块就可以进行一次尝试，判断自己是否能够成为验证节点，同时，随着时间的推移，成为验证节点的难度也在不断减小，保证一定会有验证者被选出。
 
