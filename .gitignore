@@ -4,8 +4,15 @@
 
 *.log
 
+*.bbl
+
 *.blg
 
 *.DS_Store
 
 *.out
+
+*.bcf
+
+*.toc
+
