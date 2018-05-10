@@ -115,7 +115,7 @@
 
 \subsubsection{模块功能}
 
-本系统中的所有实体都需要通过区块链进行连接，而在本文的实现方式中，所有的数据都要通过智能合约来完成交互。在智能合约中，不仅要完成其上不仅要完成对域名信任CA的相关信息存储，还需要完成域名认证的操作，同时，还要向其他的实体提供查询操作。智能合约整个模块需要提供给的功能如下：
+本系统中的所有实体都需要通过区块链进行连接，而在本文的实现方式中，所有的数据都要通过智能合约来完成交互。在智能合约中，不仅要完成对域名信任CA的相关信息存储，还需要完成域名认证的操作，同时，还要向其他的实体提供查询操作。智能合约整个模块需要提供给的功能如下：
 
 \begin{itemize}
 	\item 
@@ -138,36 +138,60 @@
 
 \subsubsection{模块接口}
 
-根据智能合约模块的功能知道，本模块需要接收域名的认证请求、验证节点的验证信息和检举信息以及域名对信任CA列表的修改、其它实体对信任CA列表的查询。所以本模块需要提供一下接口：
+根据智能合约模块的功能知道，本模块需要接收域名的认证请求、验证节点的验证信息和检举信息以及域名对信任CA列表的修改、其它实体对信任CA列表的查询，本模块需要提供的接口如表\ref{table:smartContractInterface}所示。
 
-\begin{itemize}
-	\item 
-	\noindent\text{认证请求接口}
-	%面向对象，需要提交内容，返回信息，达到什么样的目的。
-	该接口面向的对象为域名，调用需要提供的数据包括自身的公钥和域名。
+\begin{table}[h] %开始一个表格environment，表格的位置是h,here。   
+\centering
+\begin{tabular}{p{3.2cm}|p{2cm}|p{2.5cm}|p{2cm}|p{4cm}} %设置了每一列的宽度，强制转换。  
+\hline  
+ 接口名称 & 面向对象 & 参数 & 返回值 & 接口功能\\ %用&来分隔单元格的内容 \\表示进入下一行  
+\hline
+register & 域名 & 绑定地址、域名名称 & 无 & 发起身份绑定请求 \\
+\hline 
+report & 验证节点 & 域名绑定地址、域名名称 & 无 & 发起绑定检举 \\
+\hline 
+verify & 验证节点 & 待绑定地址、域名名称、验证内容 & 无 & 发起验证确认 \\
+\hline 
+modifyTrustedCAs & 域名 & 域名名称、可信CA列表 & 无 & 修改域名自身的可信CA列表 \\
+\hline 
+queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域名的可信CA列表 \\
+\hline 
+\end{tabular}  
+\caption{智能合约接口设计}\label{table:smartContractInterface} %显示表格的标题 
+\end{table} 
 
-	\item
-	\noindent\text{检举接口}
+% 通过以上接口，本系统中的角色与区块链进行交互，完成信息的获取和修改。
 
-	该接口面向的对象为验证节点，调用需要提供的数据包括自身的公钥和检举绑定的公钥和域名。
 
-	\item
-	\noindent\text{验证接口}
+% \begin{itemize}
+% 	\item 
+% 	\noindent\text{认证请求接口}
+% 	%面向对象，需要提交内容，返回信息，达到什么样的目的。
 
-	该接口面向的对象为验证节点，调用该接口前需要获取验证者在网络中放置的验证信息，并且需要在本地产生一个相应的用户证明，提交的内容包括验证信息、自身公钥和用户证明。
+% 	该接口面向的对象为域名，调用需要提供的数据包括自身的公钥和域名。
 
-	\item
-	\noindent\text{信任列表修改接口}
+% 	\item
+% 	\noindent\text{检举接口}
 
-	该接口面向的对象为通过验证的域名，调用该接口需要提供自身的公钥和相应的信任CA列表。
+% 	该接口面向的对象为验证节点，调用需要提供的数据包括自身的公钥和检举绑定的公钥和域名。
 
-	\item
-	\noindent\text{信任列表查询接口}
+% 	\item
+% 	\noindent\text{验证接口}
 
-	该接口面向的对象为依赖方，调用该接口需要提供查询的域名地址，将会返回该域名对应的信任CA列表。
+% 	该接口面向的对象为验证节点，调用该接口前需要获取验证者在网络中放置的验证信息，并且需要在本地产生一个相应的用户证明，提交的内容包括验证信息、自身公钥和用户证明。
+
+% 	\item
+% 	\noindent\text{信任列表修改接口}
+
+% 	该接口面向的对象为通过验证的域名，调用该接口需要提供自身的公钥和相应的信任CA列表。
+
+% 	\item
+% 	\noindent\text{信任列表查询接口}
+
+% 	该接口面向的对象为依赖方，调用该接口需要提供查询的域名地址，将会返回该域名对应的信任CA列表。
 	
 
-\end{itemize}
+% \end{itemize}
 
 
 
@@ -198,33 +222,15 @@
 
 \end{itemize}
 
-\subsubsection{模块接口}
+\subsubsection{模块逻辑}
 
-根据域名客户端的功能，需要完成以下接口：
+域名客户端模块需要完成以上功能，为了能够对自身信任列表的控制，其模块运行逻辑如图\ref{fig:domaincli_work_flow}所示。
 
-\begin{itemize}
-	\item 
-	\noindent\text{密钥管理接口}
-	%面向对象，需要提交内容，返回信息，达到什么样的目的。
-	用户调用该接口可以实现对密钥的生成、管理和使用，在验证信息生过程中将调用该接口对验证信息进行生成。
-
-	\item
-	\noindent\text{认证请求发起接口}
-
-	认证请求发起接口将需要用户提供域名和相关公钥，并形成认证请求交易，发送到智能合约的认证请求接口，完成一次认证请求。
-
-	\item
-	\noindent\text{验证信息生成接口}
-
-	该接口在调用前需要完成对认证请求的检查，之后再发起认证请求之后才可以对本接口发起调用。本接口将根据交易信息生成验证内容，并调用密钥管理接口，使用对应私钥完成签名。
-
-	\item
-	\noindent\text{信任列表修改接口}
-
-	该接口需要在完成身份认证之后才能调用，用户提供信任的CA列表数据发送到智能合约的信任列表修改接口，完成对自己信任列表的管理。
-	
-
-\end{itemize}
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[width=1\textwidth]{img/domaincli_work_flow}
+ 	\caption{域名客户端模块流程}\label{fig:domaincli_work_flow}
+\end{figure}
 
 
 
@@ -256,26 +262,38 @@
 
 \end{itemize}
 
-\subsubsection{模块接口}
+\subsubsection{模块逻辑}
 
-根据本模块需要完成的功能，需要完成以下接口：
+验证节点客户端需要实时的获取区块链网络中的绑定请求，并查询相关请求的验证内容，对请求做出回应，本模块的运行逻辑如下如\ref{fig:validator_work_flow}所示。
+
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[scale=0.6]{img/validator_work_flow}
+ 	\caption{验证客户端模块流程}\label{fig:validator_work_flow}
+\end{figure}
+
+
+% \subsubsection{模块接口}
+
+% 根据本模块需要完成的功能，需要完成以下接口：
 
 
 
-\begin{itemize}
-	\item 
-	\noindent\text{密钥管理接口}
+% \begin{itemize}
+% 	\item 
+% 	\noindent\text{密钥管理接口}
 
-	%面向对象，需要提交内容，返回信息，达到什么样的目的。
-	用户调用该接口可以实现对密钥的生成、管理和使用，在验证信息生过程中将调用该接口对验证信息进行生成。由于在进行验证过程中需要提供容量证明，所以本接口中还包含了容量证明的初始化操作。
+% 	%面向对象，需要提交内容，返回信息，达到什么样的目的。
+% 	用户调用该接口可以实现对密钥的生成、管理和使用，在验证信息生过程中将调用该接口对验证信息进行生成。由于在进行验证过程中需要提供容量证明，所以本接口中还包含了容量证明的初始化操作。
 
-	\item
-	\noindent\text{请求操作接口}
+% 	\item
+% 	\noindent\text{请求操作接口}
 
-	本接口将完成对一个请求的确认，其根据请求的内容，在本地存储的容量证明中得到相关的证明，提交到智能合约模块中的验证接口。如果当一个请求不合法是，将提交否定确定或者检举信息。
+% 	本接口将完成对一个请求的确认，其根据请求的内容，在本地存储的容量证明中得到相关的证明，提交到智能合约模块中的验证接口。如果当一个请求不合法是，将提交否定确定或者检举信息。
 	
 
-\end{itemize}
+% \end{itemize}
 
 
 \subsection{浏览器验证插件}
@@ -286,23 +304,31 @@
 
 本模块相比于前面的模块较为简单，只需要通过调用智能合约中的信任列表查询模块，获取域名可信CA列表与证书进行对比，在发现错误的时候向用户发出警告。
 
-\subsubsection{模块接口}
+\subsubsection{模块流程}
 
-根据本模块相关功能，需要完成以下接口：
+浏览器验证插件需要在游览器访问网址时获得域名的证书，同时通过智能合约的相关接口获取域名设置的信任CA列表，并与证书签发者对比，具体的流程如图\ref{fig:chrome_extension}所示。
 
-\begin{itemize}
-	\item 
-	\noindent\text{获取证书接口}
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[width=1\textwidth]{img/chrome_extension}
+ 	\caption{浏览器验证插件模块流程}\label{fig:chrome_extension}
+\end{figure}
 
-	在依赖方使用浏览器与域名建立通信的过程中，浏览器将收到域名的赠书，本模块需要在完成证书检查前需要通过本接口完成对证书的获取，位后续操作提供基础。
+% 根据本模块相关功能，需要完成以下接口：
 
-	\item
-	\noindent\text{获取信任CA接口}
+% \begin{itemize}
+% 	\item 
+% 	\noindent\text{获取证书接口}
 
-	在取得域名证书之后，需要获取该域名信任CA列表，已完成证书签发者与之的比较。
+% 	在依赖方使用浏览器与域名建立通信的过程中，浏览器将收到域名的赠书，本模块需要在完成证书检查前需要通过本接口完成对证书的获取，位后续操作提供基础。
+
+% 	\item
+% 	\noindent\text{获取信任CA接口}
+
+% 	在取得域名证书之后，需要获取该域名信任CA列表，已完成证书签发者与之的比较。
 	
 
-\end{itemize}
+% \end{itemize}
 
 
 
@@ -343,20 +369,25 @@
 
 %参数选择和设置
 
-\subsection{系统参数}
+\subsection{相关参数}
 
-本系统实现的认证方案是基于验证次数的方案，在该方案中将涉及到一些参数的设置，如下表所示。
+本系统实现的认证方案是基于验证次数的方案，在该方案中将涉及到一些参数的设置，如表\ref{table:param}所示。
 
 
-% \begin{table}[h] %开始一个表格environment，表格的位置是h,here。   
-% \begin{tabular}{c|r}} %设置了每一列的宽度，强制转换。  
- 
-% \hline  
-%  1&2\\表示进入下一行 
-% \hline  
-% \end{tabular}  
-% \caption{实现方式对比}\label{cmpMethod} %显示表格的标题 
-% \end{table} 
+
+\begin{table}[h] %开始一个表格environment，表格的位置是h,here。   
+\centering
+\begin{tabular}{l*{3}{|p{2cm}}*{2}{|p{3cm}}} %设置了每一列的宽度，强制转换。  
+\hline  
+ 参数符号 & $n$ &  $d$ & $t_{adjust}$ & $Info_{rcvBlock}$ & $Info_{curBlcok}$ \\ %用&来分隔单元格的内容 \\表示进入下一行  
+\hline %画一个横线，下面的就都是一样了，这里一共有4行内容  
+ 数值 & 10 & 1 & 1(/块)  & Block Hash & Block num\\
+\hline  
+ 参数含义 & 身份绑定需要10次确认 & 初始海明距离为1 & 每隔1块调整一次挑选验证节点准则 & 接收交易的区块信息为所在区块的哈希值& 当前区块的信息为该区块的编号  \\
+\hline 
+\end{tabular}  
+\caption{参数设置及含义}\label{table:param} %显示表格的标题 
+\end{table} 
 
 % \subsection{模块实现}
 % \subsubsection{智能合约}
@@ -366,19 +397,109 @@
 
 \subsection{功能测试}
 
+本小节对系统实现进行简要测试，依据系统的部署和正常调用流程，检验系统实现的正确性。具体流程如下：
+
 %可能给出不同节点加入验证完成时间
 
-\noindent\textbf{智能合约部署}
+\noindent\textbf{1. 智能合约部署}
+
+在智能合约开发和部署过程中，使用truffle工具来进行；在完成开发工作后，通过设置truffle工程目录下的truffle.js文件设置连接区块链网络节点ip和端口，然后使用compile和migrate命令来完成对智能合约的部署。在连接节点上可以看到以下日志：
+
+\begin{lstlisting}[caption={智能合约部署日志}, label=code:deploy]
+[9:45:59 AM] eth_sendTransaction
+[9:46:00 AM]   Transaction: 0x6fde67cd2a4419468b0764df675bad9ded7d64358dae8373410a73bb128490cf
+[9:46:00 AM]   Contract created: 0x4e60d62f8dee99d577fa8248843f0c49e4244662
+[9:46:00 AM]   Gas usage: 1135286
+[9:46:00 AM]   Block Number: 1
+[9:46:00 AM]   Block Time: Sun May 06 2018 09:55:59 GMT+0800 (CST)
+
+\end{lstlisting}
+
+\noindent\textbf{2. 认证接口调用}
+
+在域名客户端配置智能合约地址$0x4e60d62f8dee99d577fa8248843f0c49e4244662$，以及需要连接的区块链节点ip和端口；运行一下命令，发起验证请求服务：
+
+\begin{lstlisting}
+domain-cli reg 0x67ec76ad62a83a32ece695d5f7e9580c2e625b80 www.baidu.com
+\end{lstlisting}
+
+得到以下输出:
+
+\begin{lstlisting}
+
+2018-05-09 09:48:31,351 :16 - domain-cli - sending the register request...
+2018-05-09 09:48:31,421 :18 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xf5e7d6b5a51e7279ed8917d88d0a36aa1174856094c5ac7b4c39d82054d05816'), 'transactionIndex': 0, 'blockHash': HexBytes('0x971344c24a7801b1645c47f885c27e258effbae5f1c20c45a2505237aa13dce2'), 'blockNumber': 2, 'gasUsed': 189579, 'cumulativeGasUsed': 189579, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x..0')})}
+2018-05-09 09:48:31,421 :22 - domain-cli - The request have been accepted!
+2018-05-09 09:48:31,421 :24 - domain-cli - waitting for register completed...
+2018-05-09 09:48:31,553 :32 - domain-cli - register completed!
+2018-05-09 09:48:31,554 :42 - domain-cli - please put 3575248931332620452 atwww.baidu.com/1851786109301171516.
+2018-05-09 09:48:31,590 :48 - domain-cli - waiting validator to complete authorization (0/10)
+...
+2018-05-09 09:50:32,660 :48 - domain-cli - waiting validator to complete authorization (9/10)
+2018-05-09 09:50:37,695 :48 - domain-cli - waiting validator to complete authorization (10/10)
+2018-05-09 09:50:37,695 :50 - domain-cli - authorization completed!
+ \end{lstlisting}
+
+\noindent\textbf{3. 验证请求调用}
+
+在域名客户端配置智能合约地址$'0x4e60d62f8dee99d577fa8248843f0c49e4244662'$，以及需要连接的区块链节点ip和端口；通过对区块链的监控，当域名exmaple.com发起验证时，将运行validator-cli程序将自动发起验证，得到以下日志：
+
+\begin{lstlisting}
+
+2018-05-09 09:48:50,488 :11 - validator-cli - check new authorization request...
+2018-05-09 09:48:50,573 :21 - validator-cli - get vcode 3575248931332620452 from www.baidu.com/1851786109301171516.
+2018-05-09 09:48:50,573 :23 - validator-cli - the vcode is right, check passed!
+2018-05-09 09:48:50,573 :26 - validator-cli - waiting for new block to confirm this request...
+...
+2018-05-09 09:48:50,574 :26 - validator-cli - waiting for new block to confirm this request...
+2018-05-09 09:48:50,574 :28 - validator-cli - ready to confirm :)
+2018-05-09 09:48:50,574 :29 - validator-cli - sending confirmation requset...
+2018-05-09 09:48:50,630 :31 - validator-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xab0bcf480e2f9906aaa9c70675158236d6e912931759b768eb0d025a5e0c20d7'), 'transactionIndex': 0, 'blockHash': HexBytes('0x1a01ec45298e0167e158ef4bea077a2e0448ffdb144377f286ed4b8ff4f3c77a'), 'blockNumber': 3, 'gasUsed': 107323, 'cumulativeGasUsed': 107323, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0..0')})}
+2018-05-09 09:48:50,630 :37 - validator-cli - confirmation request sent successfully.
+
+\end{lstlisting}
 
 
+\noindent\textbf{4. 信任列表修改}
 
-\noindent\textbf{认证接口调用}
+在域名客户端运行domain-cli query 命令查询验证请求状态；待绑定完成后，通过一下来修改信任CA列表：
 
-\noindent\textbf{验证请求调用}
+\begin{lstlisting}
+domain-cli modifyTrustedCAs "Symantec Corporation" 
+\end{lstlisting}
 
-\noindent\textbf{信任列表修改}
 
-\noindent\textbf{信任列表查询}
+得到如下输出：
+
+\begin{lstlisting}
+2018-05-09 09:50:37,750 :56 - domain-cli - Sending modify Trusted CAs request...
+2018-05-09 09:50:37,750 :59 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0x7b39338a2d30624e339eb4b3261efa5fa09378936d2cad07c17fd5406ae40729'), 'transactionIndex': 0, 'blockHash': HexBytes('0x31a3306ce2fa4e09a9eafc5eaa3a0cf910f69b87d6c93271a2ce0df0f26b955f'), 'blockNumber': 14, 'gasUsed': 46593, 'cumulativeGasUsed': 46593, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0...0')})}
+2018-05-09 09:50:37,750 :63 - domain-cli - trusted CAs be modified to Symantec Corporation
+\end{lstlisting}
+
+\noindent\textbf{5. 信任列表查询}
+
+在前面的操作中，我们将www.baidu.com的信任CA设置为了Symantec Corporation，和其正在使用的证书签发机构是一致的。在游览器端安装chrome插件之后，访问www.baidu.com，插件显示内容如图\ref{fig:pass}所示。
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[scale=0.3]{img/pass}
+ 	\caption{验证通过实例}\label{fig:pass}
+\end{figure}
+
+在上图中，第一行表示是否通过验证，本例中通过验证；第二行表示设置的信任CA，后面内容为证书相关的信息。
+
+
+由于没有对www.google.com进行绑定操作，将无法查询得到信任CA列表，所以其无法通过验证，得到结果如图\ref{fig:notPass}所示。
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[scale=0.3]{img/notPass}
+ 	\caption{验证未通过实例}\label{fig:notPass}
+\end{figure}
+
+
+通过以上测试可以知道，通过实现的系统可以正常完成域名的身份认证已经信任CA列表的绑定；并且通过游览器插件，在访问网页是可以获得相关的验证结果。
 
 % \subsubsection{智能合约部署}
 
