@@ -19,7 +19,13 @@
 % 若需按照中文文献在前，英文文献在后排序，请设置“sorting = centy”；
 % 若需按照引用顺序排序，请设置“sorting = none”。
 % 若需在排序中实现更复杂的需求，请参考 biblatex-caspervector 的文档。
-\usepackage[backend = biber, style = caspervector, utf8, sorting = none]{biblatex}
+% \usepackage[backend = biber, style = caspervector, utf8, sorting = none]{biblatex}
+\usepackage[backend=biber,style=gb7714-2015, gbpub=false, giveninits = true]{biblatex}
+
+
+%table
+\usepackage{multirow}
+
 
 % 代码
 \usepackage{listings}
@@ -125,9 +131,9 @@
 	\include{chap/chap1}
 	% \include{chap/chap2}
 	% \include{chap/chap3}
-	\include{chap/chap2_3}
-	\include{chap/chap4}
-	\include{chap/chap5}
+	\include{chap/chap_2}
+	\include{chap/chap_3}
+	\include{chap/chap_4}
 	% 结论。
 	\include{chap/conclusion}
 
