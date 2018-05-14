@@ -1,18 +1,18 @@
 % Copyright (c) 2014,2016 Casper Ti. Vector
 % Public domain.
 
-\chapter{命名实体鉴权系统设计与实现}
+\chapter{域名鉴权系统设计与实现}
 
-本章将给出本文提出方案的一种实现方法，首先对方案实现的系统设计进行阐述，叙述实现本方案的方法以及本文选择的实现方式；其后给出系统实现的模块模块设计以及系统相关的测试。
+本章将给出本文提出方案的一种实现方法，首先对方案实现的系统设计进行阐述，叙述实现本方案的方法以及本文选择的实现方式；其后给出系统实现的模块模块设计，完成系统实现后相关的测试和分析。
 
 \section{系统设计}
 
-本章将对方案实现的整体系统进行描述，涉及到系统中的各个角色要求和功能；然后给出系统实现的整体架构，从上层透视系统中的信息交互；最后给出实现本系统的方式建议和本文所采用的方法及其原因。
+本章将对方案实现的整体系统进行描述，涉及到系统中的各个角色要求和功能；然后给出系统实现的整体架构，从上层透视系统中的各个模块的功能和信息交互；最后给出实现本系统的方式建议和本文所采用的方法及其原因。
 
 \subsection{系统角色}
 
 
-在方案设计的章节中，我们通过对现有PKI系统中相关实体的描述，结合方案设计的目标和相关的操作，可以得知，在实现过程中涉及的实体主要包括以下四类：作为证书申请者的用户(即域名）、依赖方、参与到系统中的验证节点、以及区块链的全节点。
+在方案设计的章节中，我们通过对现有PKI系统中相关实体的描述，结合方案设计的目标和相关的操作，在实现过程中涉及的实体主要包括以下四类：作为证书申请者的用户(即域名）、依赖方、参与到系统中的验证节点、以及区块链的全节点。
 
 % 根据方案设计中的内容，不同实体加入到本系统中拥有各自的目的；并且对于不同实体，其对本系统起到的作用和能够完成的操作也各不相同，下面将对它们加入本系统的目的和存在的意义进行介绍。
 
@@ -56,9 +56,9 @@
 
 
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
- 	\includegraphics[scale=0.6]{img/system_framework}
+ 	\includegraphics[width=1 \textwidth]{img/framework}
  	\caption{系统架构}\label{fig:framework}
 \end{figure}
 
@@ -87,11 +87,11 @@
 \caption{实现方式对比}\label{cmpMethod} %显示表格的标题 
 \end{table}  
 
-基于智能合约的方式相比于创建新链的方式而言，实现起来可能更加容易，不需要对区块链的底层去进行修改，只需要在上次的智能合约中完成相关功能和模块即可，所以难度更小；同时，基于智能合约的方式只需要将方案转换为智能合约，不需要对区块链的底层进行修改，书写的代码也要少一些，因而工程量更小。由于基于现有的区块链平台去开发智能合约，该平台一般情况下已经积累了一定的用户，很多节点已经在上面进行区块链的维护；而新开发一条链需要一段时间才能有住够多的用户加入到其中，能够保证该系统在创建初始就可以安全有效的进行下去，就系统建立的速度而言，基于智能合约方式更加高效。
+基于智能合约的方式相比于创建新链而言，实现起来可能更加容易，不需要对区块链的底层去进行修改，只需要在智能合约中完成相关功能和模块即可，所以难度更小；这也意味着，书写的代码也要少一些，工程量将更小。由于基于现有的区块链平台去开发智能合约，该平台一般情况下已经积累了一定的用户，很多节点已经在上面进行区块链的维护；而新开发一条链需要一段时间才能有住够多的用户加入到其中，能够保证该系统在创建初始就可以安全有效的进行下去，就系统建立的速度而言，基于智能合约方式更加高效。
 
-但是，基于智能合约的方式也存在着相应的缺点，主要表现在性能、健壮性和全节点付出的代价。由于现有支持智能合约的公链性能都很低，并且其上还充斥这其它智能合约的交易，所以在其上开发智能合约会直接导致本系统的请求处理并不会那么及时，性能会比较低下；而创建一条新链，这可以通过一系列优化来提高其性能。另外一个问题就是整个系统的独立性并不好，很大程度上要取决于依赖的区块链平台，如果该平台出现任何问题，那么将直接影响到本系统的正常工作；最后是全节点付出的代价问题，如果一个全节点想维护本系统中的账本，那么其必须要将该区块链上的所有交易记录都维护下来，包含了一些其它不是很相关的交易，大大提高了其加入本系统的代价。
+但是，基于智能合约的方式也存在着一些缺点，主要表现在性能、系统的独立性和全节点维护代价方面。现有支持智能合约的公链性能都很低，并且其上还充斥这其它智能合约的交易，所以在其上开发智能合约会直接导致本系统的请求并不能及时的被处理，性能会比较低下；而创建一条新链，这可以通过一系列优化来提高性能。另外一个问题就是整个系统的独立性并不好，依赖于底层的区块链平台，如果该平台出现任何问题，那么将直接影响到本系统的正常工作；最后是全节点付出的代价问题，基于智能合约需要维护额外的区块内容，而新建的链的方式将大大减少矿工所付出的代价。
 
-本文将选择基于智能合约的方式实现，基于的区块链平台为以太坊，身份验证方案选择基于验证次数的方案。
+本文将选择基于智能合约的方式实现，选择的区块链平台为以太坊，身份验证方案选择基于验证次数的方案。
 
 
 
@@ -104,7 +104,7 @@
 
 根据上一小节的论述，本文中的实现将基于以太坊来完成，在智能合约中编码方案中的相关逻辑。在本小节中，我们将给出系统实现的相关模块，并对模块的功能和实现细节进行描述。我们知道，在本系统中进行信息交互的实体包括域名、验证节点、依赖方以及区块链上的全节点；依据在前面对这些实体的相关功能描述，本系统如\ref{fig:module}图包含四个模块进行实现：智能合约、域名客户端、验证节点客户端、浏览器验证插件。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[width = 0.8\textwidth]{img/module}
  	\caption{系统模块设计}\label{fig:module}
@@ -136,9 +136,9 @@
 \end{itemize}
 
 
-\subsubsection{模块接口}
+% \subsubsection{模块接口}
 
-根据智能合约模块的功能知道，本模块需要接收域名的认证请求、验证节点的验证信息和检举信息以及域名对信任CA列表的修改、其它实体对信任CA列表的查询，本模块需要提供的接口如表\ref{table:smartContractInterface}所示。
+% 根据智能合约模块的功能知道，本模块需要接收域名的认证请求、验证节点的验证信息和检举信息以及域名对信任CA列表的修改、其它实体对信任CA列表的查询，本模块需要提供的接口如表\ref{table:smartContractInterface}所示。
 
 \begin{table}[h] %开始一个表格environment，表格的位置是h,here。   
 \centering
@@ -226,7 +226,7 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 域名客户端模块需要完成以上功能，为了能够对自身信任列表的控制，其模块运行逻辑如图\ref{fig:domaincli_work_flow}所示。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[width=1\textwidth]{img/domaincli_work_flow}
  	\caption{域名客户端模块流程}\label{fig:domaincli_work_flow}
@@ -262,16 +262,16 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 \end{itemize}
 
-\subsubsection{模块逻辑}
-
-验证节点客户端需要实时的获取区块链网络中的绑定请求，并查询相关请求的验证内容，对请求做出回应，本模块的运行逻辑如下如\ref{fig:validator_work_flow}所示。
-
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[scale=0.6]{img/validator_work_flow}
  	\caption{验证客户端模块流程}\label{fig:validator_work_flow}
 \end{figure}
+
+\subsubsection{模块逻辑}
+
+验证节点客户端需要实时的获取区块链网络中的绑定请求，并查询相关请求的验证内容，对请求做出回应，本模块的运行逻辑如下如\ref{fig:validator_work_flow}所示。
+
 
 
 % \subsubsection{模块接口}
@@ -304,15 +304,19 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 本模块相比于前面的模块较为简单，只需要通过调用智能合约中的信任列表查询模块，获取域名可信CA列表与证书进行对比，在发现错误的时候向用户发出警告。
 
+
+
 \subsubsection{模块流程}
 
-浏览器验证插件需要在游览器访问网址时获得域名的证书，同时通过智能合约的相关接口获取域名设置的信任CA列表，并与证书签发者对比，具体的流程如图\ref{fig:chrome_extension}所示。
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[width=1\textwidth]{img/chrome_extension}
  	\caption{浏览器验证插件模块流程}\label{fig:chrome_extension}
 \end{figure}
+
+浏览器验证插件需要在游览器访问网址时获得域名的证书，同时通过智能合约的相关接口获取域名设置的信任CA列表，并与证书签发者对比，具体的流程如图\ref{fig:chrome_extension}所示。
+
+
 
 % 根据本模块相关功能，需要完成以下接口：
 
@@ -343,7 +347,7 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 实验所需的区块链网络搭建在阿里云服务中，如图\ref{fig:platform}所示。区块链网络中包含5台阿里云服务器，作为全节点完成对区块链网络的维护；另外5台服务器作为验证节点，每台服务器上启动10个验证客户端，共计拥有50个验证节点；1台阿里云部署web服务，作为域名服务器并运行域名客户端；本地PC作为依赖方，模拟完成对域名的访问，在过程中完成对信任CA列表的获取。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[scale = 0.4]{img/platform}
  	\caption{平台搭建}\label{fig:platform}
@@ -369,7 +373,7 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 %参数选择和设置
 
-\subsection{相关参数}
+\subsection{相关参数}\label{pa}
 
 本系统实现的认证方案是基于验证次数的方案，在该方案中将涉及到一些参数的设置，如表\ref{table:param}所示。
 
@@ -405,9 +409,10 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 在智能合约开发和部署过程中，使用truffle工具来进行；在完成开发工作后，通过设置truffle工程目录下的truffle.js文件设置连接区块链网络节点ip和端口，然后使用compile和migrate命令来完成对智能合约的部署。在连接节点上可以看到以下日志：
 
-\begin{lstlisting}[caption={智能合约部署日志}, label=code:deploy]
+\begin{lstlisting}%[caption={智能合约部署日志}, label=code:deploy]
+
 [9:45:59 AM] eth_sendTransaction
-[9:46:00 AM]   Transaction: 0x6fde67cd2a4419468b0764df675bad9ded7d64358dae8373410a73bb128490cf
+[9:46:00 AM]   Transaction: 0x6f...cf
 [9:46:00 AM]   Contract created: 0x4e60d62f8dee99d577fa8248843f0c49e4244662
 [9:46:00 AM]   Gas usage: 1135286
 [9:46:00 AM]   Block Number: 1
@@ -454,7 +459,7 @@ domain-cli reg 0x67ec76ad62a83a32ece695d5f7e9580c2e625b80 www.baidu.com
 2018-05-09 09:48:50,574 :26 - validator-cli - waiting for new block to confirm this request...
 2018-05-09 09:48:50,574 :28 - validator-cli - ready to confirm :)
 2018-05-09 09:48:50,574 :29 - validator-cli - sending confirmation requset...
-2018-05-09 09:48:50,630 :31 - validator-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xab0bcf480e2f9906aaa9c70675158236d6e912931759b768eb0d025a5e0c20d7'), 'transactionIndex': 0, 'blockHash': HexBytes('0x1a01ec45298e0167e158ef4bea077a2e0448ffdb144377f286ed4b8ff4f3c77a'), 'blockNumber': 3, 'gasUsed': 107323, 'cumulativeGasUsed': 107323, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0..0')})}
+2018-05-09 09:48:50,630 :31 - validator-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xab0bcf480e2f9906aaa9c70675158236d6e912931759b768eb0d025a5e0c20d7'), 'transactionIndex': 0, 'blockHash': HexBytes('0x1a01ec45298e0167e158ef4bea077a2e0448ffdb144377f286ed4b8ff4f3c77a'), 'blockNumber': 87, 'gasUsed': 107323, 'cumulativeGasUsed': 107323, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0..0')})}
 2018-05-09 09:48:50,630 :37 - validator-cli - confirmation request sent successfully.
 
 \end{lstlisting}
@@ -473,7 +478,7 @@ domain-cli modifyTrustedCAs "Symantec Corporation"
 
 \begin{lstlisting}
 2018-05-09 09:50:37,750 :56 - domain-cli - Sending modify Trusted CAs request...
-2018-05-09 09:50:37,750 :59 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0x7b39338a2d30624e339eb4b3261efa5fa09378936d2cad07c17fd5406ae40729'), 'transactionIndex': 0, 'blockHash': HexBytes('0x31a3306ce2fa4e09a9eafc5eaa3a0cf910f69b87d6c93271a2ce0df0f26b955f'), 'blockNumber': 14, 'gasUsed': 46593, 'cumulativeGasUsed': 46593, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0...0')})}
+2018-05-09 09:50:37,750 :59 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0x7b39338a2d30624e339eb4b3261efa5fa09378936d2cad07c17fd5406ae40729'), 'transactionIndex': 0, 'blockHash': HexBytes('0x31a3306ce2fa4e09a9eafc5eaa3a0cf910f69b87d6c93271a2ce0df0f26b955f'), 'blockNumber': 113, 'gasUsed': 46593, 'cumulativeGasUsed': 46593, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0...0')})}
 2018-05-09 09:50:37,750 :63 - domain-cli - trusted CAs be modified to Symantec Corporation
 \end{lstlisting}
 
@@ -481,25 +486,68 @@ domain-cli modifyTrustedCAs "Symantec Corporation"
 
 在前面的操作中，我们将www.baidu.com的信任CA设置为了Symantec Corporation，和其正在使用的证书签发机构是一致的。在游览器端安装chrome插件之后，访问www.baidu.com，插件显示内容如图\ref{fig:pass}所示。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[scale=0.3]{img/pass}
  	\caption{验证通过实例}\label{fig:pass}
 \end{figure}
 
-在上图中，第一行表示是否通过验证，本例中通过验证；第二行表示设置的信任CA，后面内容为证书相关的信息。
-
-
-由于没有对www.google.com进行绑定操作，将无法查询得到信任CA列表，所以其无法通过验证，得到结果如图\ref{fig:notPass}所示。
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
  	\centering
  	\includegraphics[scale=0.3]{img/notPass}
  	\caption{验证未通过实例}\label{fig:notPass}
 \end{figure}
 
+在上图中，第一行表示是否通过验证，本例中通过验证；第二行表示设置的信任CA，后面内容为证书相关的信息。
+
+由于没有对www.google.com进行绑定操作，将无法查询得到信任CA列表，所以其无法通过验证，得到结果如图\ref{fig:notPass}所示。
 
 通过以上测试可以知道，通过实现的系统可以正常完成域名的身份认证已经信任CA列表的绑定；并且通过游览器插件，在访问网页是可以获得相关的验证结果。
+
+
+
+\subsection{分析与讨论}
+
+\subsubsection{绑定完成时间分析}
+
+按照本文\ref{pa}小节中的参数设置，在一个身份绑定请求在发起之后100-150块不等的时间内可以完成绑定。以太坊上面的出块时间大约为10s，在本测试环境中，一个绑定的完成时间在半个小时左右。按照每出一个块进行一次验证者选取的难度调整，而在选取过程中比较的是256位的二进制数，所以256块之后一定能完成一次绑定，该时间不会超过1个小时。
+
+绑定完成时间和难度调整的参数设置、本系统中的加入验证节点数目密切相关，如果将本系统投入到实际环境中应用，应该进一步分析它们之间的关系。
+
+
+
+\subsubsection{交易执行代价分析}
+
+在方案设计中包含了所有交易执行的代价，在这里先忽略激励机制中的相关费用，考虑在本文实现系统上面的交易花费。根据底层区块链平台以太坊的特性，其上面执行任意对区块链产生改动的交易都需要消耗所谓的Gas。换句话说，执行的每一个操作都需要花费相应的费用，支付的内容包括执行操作的计算量和存储的内容大小。
+
+对于以太坊上调用智能合约的交易，首先需要将交易发送到以太坊的区块中，其所需的花费被称为$transaction\ costs$，是根据数据大大小来计算的；对于交易的执行，需要根据交易的计算量来进行费用评估，被称为$execution\ costs$。在以太坊上交易费用的计量单位为$gas$，根据该\parencite{ethgasstation}可知现在$1\ gas = 8\ Gwei$。
+
+对于$exmaple.com$的绑定、验证、检举和信任列表修改请求执行消耗的代价如表\ref{table:cost}所示。
+
+
+\begin{table}[!h] %开始一个表格environment，表格的位置是h,here。   
+\begin{tabular}{| p{2cm} | p{4cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | } %设置了每一列的宽度，强制转换。  
+ 
+\hline  
+  交易名称 & 发送数据 & 交易费用(gas) &  执行费用(gas) & 总费用(gas) & 价格(\$) \\ %用&来分隔单元格的内容 \\表示进入下一行  
+\hline %画一个横线，下面的就都是一样了，这里一共有4行内容  
+  绑定请求 & $Pk_A$、$example.com$ & 189451 &  165555 & 355006 & 1.977 \\
+\hline
+  验证操作 & $Pk_A$、$example.com$、$Vcode$ & 208475 &  197342 &  405817 & 2.26 \\
+\hline
+  检举操作 & $Pk_A$、$example.com$、$Pk_B$  & 198475 &  185638 &  384113 & 2.139 \\
+\hline
+  修改信任列表操作 & "CA List"  & 36906 &  14674 &  51580 & 0.287 \\
+\hline  
+\end{tabular}  
+\caption{交易执行代价}\label{table:cost} %显示表格的标题 
+\end{table}  
+
+
+
+
+%\subsubsection{存储代价分析}
+
 
 % \subsubsection{智能合约部署}
 

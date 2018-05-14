@@ -59,7 +59,7 @@
 	\hline
 	签发限制 & \small HPKP('11)\parencite{evans2015public}; DANE('11)\parencite{barnes2011dane}; CAGe('13)\parencite{kasten2013cage} \\
 	\hline
-	\multirow{2}{*}{证书审计} & \small Sovereign Keys('12)\parencite{eckersley2012internet};Certificate Transparency('12)\parencite{laurie2013certificate}; \\ \cline{2-2}
+	\multirow{2}{*}{签发审计} & \small Sovereign Keys('12)\parencite{eckersley2012internet};Certificate Transparency('12)\parencite{laurie2013certificate}; \\ \cline{2-2}
 	& \small AKI('13)\parencite{kim2013accountable}; CIRT('14)\parencite{ryan2014enhanced}; ARPKI('14)\parencite{basin2014arpki}; DTKI('14)\parencite{cheval2014dtki}	 \\
 	\hline
 	
@@ -112,7 +112,7 @@ Certificate Transparency(CT)\supercite{laurie2013certificate}是由Goole提出�
 
 \subsubsection{物联网}
 
-物联网通过传感器将大量的设备连接在一起，其间通过传感器获取数据并自动的完成数据的交换，可以很适宜的将区块链应用到其中。如智能汽车、记录运输药物过程中的温度\supercite{bocek2017blockchains}、食品运输信息\supercite{schneider2017design}以及感知病人数据都是物联网和区块链相结合的一些尝试，不经减少了制造商的成本，也让客户对相关商品信息更加放心，两方都能从中获益。一些研究者也对物联网和区块链的结合进行了探讨，\parencite{hardjono2016cloud}中提出了一个全新的物联网电子商务模型，基于区块链上和智能合约来完成交易的自动化；同时使用区块链完成无需可信第三方认证的物联网构建，提升了物联网的安全和隐私。
+物联网通过传感器将大量的设备连接在一起，其间通过传感器获取数据并自动的完成数据的交换，可以很适宜的将区块链应用到其中。如智能汽车、记录运输药物过程中的温度\supercite{bocek2017blockchains}、食品运输信息\supercite{schneider2017design}以及感知病人数据都是物联网和区块链相结合的一些尝试，不仅减少了制造商的成本，也让客户对相关商品信息更加放心，两方都能从中获益。一些研究者也对物联网和区块链的结合进行了探讨，\parencite{hardjono2016cloud}中提出了一个全新的物联网电子商务模型，基于区块链上智能合约来完成交易的自动化；同时使用区块链完成无需可信第三方认证的物联网构建，提升了物联网的安全和隐私。
 
 
 \subsubsection{社会公共服务}
@@ -126,7 +126,7 @@ Certificate Transparency(CT)\supercite{laurie2013certificate}是由Goole提出�
 
 \subsubsection{安全和隐私}
 
-区块链技术同时也被用来巩固传统计算机相关服务的安全和隐私。Charles在2016年提出了一个名为BitAV的反恶意软件环境，用户在区块链上发布和查询病毒的相关信息，其改善了扫描速度并增强了系统的鲁棒性。就本文所述的PKI系统而言，也有很多方案被提出用于增强其安全性，如在\parencite{baldi2017certificate}中，将撤销的证书存储在区块链上，提供更加可靠的证书验证服务，可以避免传统OSCP中单点失效的问题。IKP\supercite{matsumoto2016ikp}方案利用以太坊智能合约，将PKI中证书相关的操作都转移到区块链上，记录证书的申请、签发以及吊销过程，让PKI中的各个步骤都是公开可审计的，此时区块链相当于是公开且不可篡改的日志服务器，供大家审计PKI系统中的所有操作。MIT Media Lab等人提出了名为MedRec\supercite{azaria2016medrec}的项目，利用区块链去中心化的特性来提升病人对自己医疗数据的管理权，完成对数据访问和共享的控制，使得用户隐私得到了保障。
+区块链技术同时也被用来巩固传统计算机相关服务的安全和隐私。Charles在2016年提出了一个名为BitAV的反恶意软件环境，用户在区块链上发布和查询病毒的相关信息，其改善了扫描速度并增强了系统的鲁棒性。就本文所述的PKI系统而言，也有很多方案被提出用于增强其安全性，如在\parencite{baldi2017certificate}中，将撤销的证书存储在区块链上，提供更加可靠的证书验证服务，可以避免传统OSCP中单点失效的问题。IKP\supercite{matsumoto2016ikp}方案利用以太坊智能合约，将PKI中证书相关的操作都转移到区块链上，记录证书的申请、签发以及吊销过程，让PKI中的各个步骤都是公开可审计的，此时区块链相当于是公开且不可篡改的日志服务器，供大家审计PKI系统中的所有操作。MIT Media Lab等人提出了名为MedRec\supercite{azaria2016medrec}的项目，利用区块链去中心化的特性来提升病人对自己医疗数据的管理权，完成对数据访问和共享的控制，使得用户隐私得到了进一步保障。
 
 
 
@@ -165,19 +165,26 @@ Certificate Transparency(CT)\supercite{laurie2013certificate}是由Goole提出�
 
 %本文将对给出方案进行详细阐述，分析方案的安全性，
 
-本论文的章节结构如下：
+本文结构如下图所示\ref{fig:plan}：
+
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\includegraphics[scale=0.7]{img/plan}
+ 	\caption{文章结构}\label{fig:plan}
+\end{figure}
+
+% 本论文的章节结构如下：
 
 第一章：论文绪论，介绍本文的研究背景和研究意义，给出PKI的研究现状以及区块链的应用现状，提出研究的问题，并简要说明本文的组织结构。
 
-第二章：介绍区块链技术的基本知识，包括比特币、共识和智能合约等概念，并介绍区块链的应用场景。
+第三章：介绍PKI的相关知识，介绍PKI系统和证书，给出PKI系统中存在的问题和已有的改善措施；其后介绍区块链技术的基本知识，包括比特币、共识和智能合约等概念，并介绍区块链的应用场景
 
-第三章：介绍PKI的相关知识，介绍PKI系统和证书，给出PKI系统中存在的问题和已有的改善措施。
+第三章：介绍一种基于区块链的命名实体鉴权方案的设计，首先给出方案的概述，描述方案设计到角色和工作流程，然后对方案进行详细阐述，并对方案的安全性进行分析。
 
-第四章：介绍一种基于区块链的命名实体鉴权方案的设计，首先给出方案的概述，描述方案设计到角色和工作流程，然后对方案进行详细阐述，并对方案的安全性进行分析。
+第四章：阐述本文给出方案的一种系统实现，给出系统设计和模块设计，根据设计对系统进行实现，并进行系统功能性测试和相关分析。
 
-第五章：阐述本文给出方案的一种系统实现，给出系统设计和模块设计，并对系统进行实现和相关测试。
-
-第六章：对本文提出的方案进行总结，并对未来的工作提出展望。
+第五章：对本文提出的方案进行总结，并对未来的工作提出展望。
 
 
 
