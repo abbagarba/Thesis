@@ -7,14 +7,16 @@
 % Copyright (c) 2014,2016 Casper Ti. Vector
 % Public domain.
 
-\section{PKI}
+\section{PKI背景知识}
 
-本小节将对PKI系统进行详细介绍，首先从系统架构对PKI进行解析，阐述系统中包含的组成部分和各自的功能；其后将对证书进行介绍，包括证书的结构以及证书的生命周期；最后对本系统存在的问题以及相应的解决方案进行简要叙述。
+% 本小节将对PKI系统进行详细介绍，首先从系统架构对PKI进行解析，阐述系统中包含的组成部分和各自的功能；其后将对证书进行介绍，包括证书的结构以及证书的生命周期；最后对本系统存在的问题以及相应的解决方案进行简要叙述。
 
-\subsection{PKI系统架构}
+本小节对PKI系统进行简要介绍，首先从系统架构对PKI进行解析，阐述本系统中包含的组件和各自功能；然后对证书进行介绍，包括证书的结构以及证书的生命周期。
+
+\subsection{系统架构}
 
 
-PKI是由安全和操作策略、安全服务以及支持公钥密钥和证书管理的交互式协议构成的。公钥和对应证书的生成、分发和管理将通过授权机构（CAs）、注册机构（RAs）和目录服务来完成\supercite{weise2001public}，它们将会建立等级信任或者说信任链。以上提到CAs、RAs和目录服务可以将数字证书用于鉴定不同实体的身份，而PKI拥有如此架构的目的是为了能支持并完成数据、凭证在各种不安全环境下的安全交换。
+PKI是由安全和操作策略、安全服务以及支持公钥密钥和证书管理的交互式协议构成的。公钥和对应证书的生成、分发和管理将通过授权机构（CAs）、注册机构（RAs）和目录服务来完成\cite{weise2001public}，它们将会建立等级信任或者说信任链。以上提到CAs、RAs和目录服务可以将数字证书用于鉴定不同实体的身份，而PKI拥有如此架构的目的是为了能支持并完成数据、凭证在各种不安全环境下的安全交换。
 
 在PKI中主要涉及的实体和相关组件如图\ref{fig:pki}所示。
 
@@ -34,13 +36,66 @@ PKI是由安全和操作策略、安全服务以及支持公钥密钥和证书�
 
 在PKI的发展历程中，存在着多种数字证书的类型，每种类型的证书应用在不同的场景之中，因此也拥有各自独有的格式。目前最为通用的证书标准为X.509，该数字证书标准由国际电信联盟(InternationalTelecommunication Union, ITU)制定，于1988年公布最初版本。此标准的证书最为核心的部分是公钥和用户标识符，同时，X.509公钥证书中也可以包含证书版本号、序列号、签名算法标识、签发者名称、证书持有人名称和证书有效期等信息。X.509证书标准的最新版本是X.509 v3，在该版本中定义了数字证书的扩展信息，使得数字证书的功能可以进一步扩展，具有更大的灵活性；当数字证书在特殊应用环境下使用时，该扩展信息还可以起到传递附加信息的作用。
 
-X.509 v3版本的数字证书结构如图\ref{fig:certificate}所示。
+RFC3280\cite{housley1998internet}对X.509中包含的字段和各个字段的含义进行了详细描述，该类证书中主要包含三个部分：待签名的证书、签名算法和签名值。
 
-\begin{figure}[htbp]
- 	\centering
- 	\includegraphics[width = 0.8\textwidth]{img/certificate}
- 	\caption{X.509数字证书结构\supercite{fredriksson2017distributed}}\label{fig:certificate}
-\end{figure}
+% \begin{figure}[htbp]
+%  	\centering
+%  	\includegraphics[width = 0.8\textwidth]{img/certificate}
+%  	\caption{X.509数字证书结构\cite{fredriksson2017distributed}}\label{fig:certificate}
+% \end{figure}
+
+\begin{lstlisting}[caption={X.509证书结构}]
+Certificate  ::=  SEQUENCE  {
+    tbsCertificate       TBSCertificate, \\待签名的证书
+    signatureAlgorithm   AlgorithmIdentifier, \\签名算饭
+    signatureValue       BIT STRING  \\签名值}
+
+ \end{lstlisting}
+
+待签名的证书中包含了需要纳入的的相关信息，如\ref{tbscert}所示。
+ \begin{lstlisting}[caption={X.509证书包含字段},label=tbscert]
+TBSCertificate  ::=  SEQUENCE  {
+    version         [0]  EXPLICIT Version DEFAULT v1, \\证书版本号
+    serialNumber         CertificateSerialNumber, \\证书序列号
+    signature            AlgorithmIdentifier,  \\签名表示算法
+    issuer               Name,  \\证书签发者
+    validity             Validity, \\证书有效期
+    subject              Name, \\证书持有者
+    subjectPublicKeyInfo SubjectPublicKeyInfo,  \\证书持有者公钥信息
+    issuerUniqueID  [1]  IMPLICIT UniqueIdentifier OPTIONAL, \\证书签发者唯一标识
+                         -- If present, version MUST be v2 or v3 
+    subjectUniqueID [2]  IMPLICIT UniqueIdentifier OPTIONAL, \\证书持有者唯一标识
+                         -- If present, version MUST be v2 or v3
+    extensions      [3]  EXPLICIT Extensions OPTIONAL  \\扩展
+                         -- If present, version MUST be v3
+    }
+
+Version  ::=  INTEGER  {  v1(0), v2(1), v3(2)  }
+
+CertificateSerialNumber  ::=  INTEGER
+
+Validity ::= SEQUENCE {
+    notBefore      Time, \\开始时间
+    notAfter       Time  \\截止时间}
+
+Time ::= CHOICE {
+    utcTime        UTCTime,
+    generalTime    GeneralizedTime }
+
+UniqueIdentifier  ::=  BIT STRING
+
+SubjectPublicKeyInfo  ::=  SEQUENCE  {
+    algorithm            AlgorithmIdentifier, \\标识算法
+    subjectPublicKey     BIT STRING  \\公钥}
+
+Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension 
+
+Extension  ::=  SEQUENCE  {
+    extnID      OBJECT IDENTIFIER,  \\扩展ID
+    critical    BOOLEAN DEFAULT FALSE,  \\级别
+    extnValue   OCTET STRING  \\ 扩展值}
+
+\end{lstlisting}
 
 
 \subsubsection{证书的生命周期}
@@ -56,19 +111,21 @@ X.509 v3版本的数字证书结构如图\ref{fig:certificate}所示。
 
 \begin{figure}[htbp]
  	\centering
- 	\includegraphics[width = 0.8\textwidth]{img/cert_lifecycle}
+ 	\includegraphics[width = 1\textwidth]{img/cert_lifecycle}
  	\caption{证书的生命周期}\label{fig:cert_lifecycle}
 \end{figure}
 
-\subsection{系统中存在的问题}
+\section{PKI系统的问题与解决方案}
 
-从安全的角度来看现有Internet PKI系统，其中存在着大大小小的各种问题，在本小节中，将对这些存在的问题进行简要概述。
+从安全的角度来看现有Internet PKI系统，其中存在着大大小小的各种问题，在本小节中，将对这些存在的问题进行简要概述，并列出一些已有的解决方案。
+
+\subsection{主要问题分析}
 
 当Web安全在1995年刚开始被谈及时，当时的互联网和现在是具有很大差异的，它的重要性并没有现在这么强。随着互联网的蓬勃发展，加密安全成为了商业中必备的一部分，关乎这一个企业的生死。现有的PKI系统和当初设计的目的是一致的，即为上电子商务操作提供足够的安全保障，更进一步可以说PKI系统希望提供商务安全。这种安全可以通较少的资金、更快的网页获取速度、可接受的不安全操作和不对用户做过多的限制来完成。本系统由CAs、寻利的商业实体和希望扩大市场份额的浏览器供应商一起来组成。
 
 CA在本系统中充当着信任的基础，其每年签发了数百万计的证书，这些证书将在互联网中流通并使用。虽然这个系统正在正常的运转着，但是证书的安全性并没有想象中那么好。同时，在不那么完美的条件下，有时候用户还需要对申请的证书进行付费，然而并不是所有用户都愿意为之付出代价的，很简单的一个原因就是他们在付费之后希望得到完美的安全性保障。
 
-在该系统中，存在着以下几个方面的问题\supercite{ristic2014bulletproof}：
+在该系统中，存在着以下几个方面的问题\cite{ristic2014bulletproof}：
 
 
 \begin{itemize}
@@ -113,7 +170,7 @@ CA在本系统中充当着信任的基础，其每年签发了数百万计的证
 \end{itemize}
 
 
-\subsection{已有的改善措施}
+\subsection{现有的解决方案}
 
 为了解决X.509 PKI中的安全问题并削弱对CAs的信任，一系列的方案被提出来，本小节将对这些方案进行分类并简要叙述。
 
@@ -123,7 +180,7 @@ CA在本系统中充当着信任的基础，其每年签发了数百万计的证
 
 \begin{figure}[htbp]
  	\centering
- 	\includegraphics[width = 1.0\textwidth]{img/Classification_of_PKI_proposals}
+ 	\includegraphics[scale=0.35, angle=90]{img/Classification_of_PKI_proposals}
  	\caption{PKI方案分类}\label{fig:Classification_of_PKI_proposals}
 \end{figure}
 
@@ -131,16 +188,16 @@ CA在本系统中充当着信任的基础，其每年签发了数百万计的证
 
 \subsubsection{以客户端为中心的方案}
 
-这类方案希望在客户端接受证书之前，可以更加准确的验证证书的有效性。Policy engine\supercite{abadi2013global}的方案允许客户端在本地制定信任决策，比如支持的密码算法，证书的一致性性等。
+这类方案希望在客户端接受证书之前，可以更加准确的验证证书的有效性。Policy engine\cite{abadi2013global}的方案允许客户端在本地制定信任决策，比如支持的密码算法，证书的一致性性等。
 
-有一些其它的方案希望构建一个公共的域名证书存储厂库，使得客户端可以在接受到域名证书之后与厂库中的证书进行对比，确定证书的正确性，Perspectives\supercite{wendlandt2008perspectives} 和 Convergence\supercite{convergence}就属于这类方案。
+有一些其它的方案希望构建一个公共的域名证书存储厂库，使得客户端可以在接受到域名证书之后与厂库中的证书进行对比，确定证书的正确性，Perspectives\cite{wendlandt2008perspectives} 和 Convergence\cite{convergence}就属于这类方案。
 
 以客户端为中心的方案并不需要对服务端进行的改动，但是其需要客户端建立额外的连接去查询资源厂库，这将在一定程度上降低建立HTTPS的速度。
 
 
 \subsubsection{以CA为中心的方案}
 
-X.509 PKI包含了证书吊销列表（CRL)标准\supercite{cooper2008internet}，希望防止客户端与一个使用已经被吊销证书的域名之间建立TLS连接。但是这需要保证客户端需要能随时的访问到CRLs。为了进一步解决在线验证的问题，在线证书状态协议（OCSP）\supercite{myers1999x}允许客户端通过CA的OCSP服务器去检查域名证书的状态。但是OCSP也拥有如安全、隐私、性能方案的顾虑。另外一个解决方案是短期证书（SLC）\supercite{topalovic2012towards}，该方案希望签发短生命周期的证书，让域名定期的更换证书。SLC希望带来和OCSP类似的好处，但是不需要在线验证。以证书为中心的方案严重依赖于浏览器去检测和拉黑被攻陷CA签发的证书，这是这类方案的最大缺陷。
+X.509 PKI包含了证书吊销列表（CRL)标准\cite{cooper2008internet}，希望防止客户端与一个使用已经被吊销证书的域名之间建立TLS连接。但是这需要保证客户端需要能随时的访问到CRLs。为了进一步解决在线验证的问题，在线证书状态协议（OCSP）\cite{myers1999x}允许客户端通过CA的OCSP服务器去检查域名证书的状态。但是OCSP也拥有如安全、隐私、性能方案的顾虑。另外一个解决方案是短期证书（SLC）\cite{topalovic2012towards}，该方案希望签发短生命周期的证书，让域名定期的更换证书。SLC希望带来和OCSP类似的好处，但是不需要在线验证。以证书为中心的方案严重依赖于浏览器去检测和拉黑被攻陷CA签发的证书，这是这类方案的最大缺陷。
 
 
 \subsubsection{以域名为中心的方案}
@@ -150,20 +207,20 @@ X.509 PKI包含了证书吊销列表（CRL)标准\supercite{cooper2008internet}�
 
 1. Pinning-based（公钥固定）
 
-如Public Key Pining(PKP)\supercite{evans2015public}和Trust Assertions for Certificate Keys(TACK)\supercite{topalovic2012towards}等Pinning的方案希望域名宣称自己使用的密钥，以便客户端收到的密钥是否正确。但是这类方法有自己的安全缺陷，比如在第一次访问域名的时候无法给予安全保护。
+如Public Key Pining(PKP)\cite{evans2015public}和Trust Assertions for Certificate Keys(TACK)\cite{marlinspike2012internet}等Pinning的方案希望域名宣称自己使用的密钥，以便客户端收到的密钥是否正确。但是这类方法有自己的安全缺陷，比如在第一次访问域名的时候无法给予安全保护。
 
 2. DNSSEC-based
 
-这类方案的全称叫基于DNS的命名实体鉴权（DANE）\supercite{schlyter2012dns}，希望域名的所有者可以在DNSSEC实体上放置证书相关的特殊声明，例如可以为其签发证书的CA名单、声明接受的证书或者是声明验证证书有效性的站点，但是DANE的安全性严重的依赖于DNS操作的安全性。
+这类方案的全称叫基于DNS的命名实体鉴权（DANE）\cite{barnes2011dane}，希望域名的所有者可以在DNSSEC实体上放置证书相关的特殊声明，例如可以为其签发证书的CA名单、声明接受的证书或者是声明验证证书有效性的站点，但是DANE的安全性严重的依赖于DNS操作的安全性。
 
 
 3. 日志服务器
 
-另外一种使用比较多的方法是通过日志服务器的方案来记录CA的行为，为域名拥有者提供公共的、可审计的CA行为日志，监督CA的行为。例如 Sovereign Keys (SK)\supercite{eckersleysovereign}要求域名拥有者生成一个主密钥对来完成对TLS公钥的签名，并且将其主公钥以只读和只可追加的方式记录在时间服务器上。然而，SK需要客户端查询服务器，增加了延迟并牺牲了隐私。
+另外一种使用比较多的方法是通过日志服务器的方案来记录CA的行为，为域名拥有者提供公共的、可审计的CA行为日志，监督CA的行为。例如 Sovereign Keys (SK)\cite{eckersley2012internet}要求域名拥有者生成一个主密钥对来完成对TLS公钥的签名，并且将其主公钥以只读和只可追加的方式记录在时间服务器上。然而，SK需要客户端查询服务器，增加了延迟并牺牲了隐私。
 
-证书透明（CT）\supercite{laurie2013certificate}的方案允许每个域名将自己的证书注册记录到一个公共日志服务器上，该服务器使用默克尔哈希树的结构来存储这些证书，并保证只能追加的性质。该服务器将返回一个不可否认的证书审计证明给域名，域名使用证书和该证明来完成与客户端TLS连接的建立。但是，本方案并不能防止当一个攻击者攻破了CA并创建并注册一个虚假的证书的情况，CT并不能阻止客户端接受这类证书。由于证书透明在设计过程中并没有强调证书的吊销，相应的证书吊销透明（RT）\supercite{laurie2012revocation}也被提出。为了提高CT对证书吊销的效率，证书签发吊销透明（CIRT\supercite{ryan2014enhanced}方案被提出。
+证书透明（CT）\cite{laurie2013certificate}的方案允许每个域名将自己的证书注册记录到一个公共日志服务器上，该服务器使用默克尔哈希树的结构来存储这些证书，并保证只能追加的性质。该服务器将返回一个不可否认的证书审计证明给域名，域名使用证书和该证明来完成与客户端TLS连接的建立。但是，本方案并不能防止当一个攻击者攻破了CA并创建并注册一个虚假的证书的情况，CT并不能阻止客户端接受这类证书。由于证书透明在设计过程中并没有强调证书的吊销，相应的证书吊销透明（RT）\cite{laurie2012revocation}也被提出。为了提高CT对证书吊销的效率，证书签发吊销透明（CIRT)\cite{ryan2014enhanced}方案被提出。
 
-另外一种基于日志服务器的方案称作可审计密钥设施（AKI）\supercite{kim2013accountable}，该方案希望保护域名和客户端遭受到单点失败攻击，比如某个CA的根密钥被泄露，通过制衡该系统中各个实体，AKI在保持高效处理证书操作的情况下，成功的将信任分散到了多个实体，并可以检测出实体的恶意行为。
+另外一种基于日志服务器的方案称作可审计密钥设施（AKI）\cite{kim2013accountable}，该方案希望保护域名和客户端遭受到单点失败攻击，比如某个CA的根密钥被泄露，通过制衡该系统中各个实体，AKI在保持高效处理证书操作的情况下，成功的将信任分散到了多个实体，并可以检测出实体的恶意行为。
 
 
 
@@ -181,12 +238,12 @@ X.509 PKI包含了证书吊销列表（CRL)标准\supercite{cooper2008internet}�
 \subsection{比特币与区块链技术}
 
 
-比特币作为一个P2P电子货币系统，是由中本聪在08年中的一篇论文中提出\supercite{nakamoto2008bitcoin}，整个系统如下图\ref{fig:bitcoin}所示。
+比特币作为迄今为止最为成功的数字货币，是由中本聪在08年中的一篇论文中提出\cite{nakamoto2008bitcoin}，整个网络如下图\ref{fig:bitcoin_network}所示。
 
 \begin{figure}[htbp]
  	\centering
- 	\includegraphics[width = 1\textwidth]{img/bitcoin}
- 	\caption{bitcoin 概述\supercite{antonopoulos2014mastering}}\label{fig:bitcoin}
+ 	\includegraphics[width = 1\textwidth]{img/bitcoin_network}
+ 	\caption{bitcoin网络}\label{fig:bitcoin_network}
 \end{figure}
 
 比特币是构建在一个P2P网络上的数字货币系统，由拥有公私钥对的用户、网络中传播的交易和通过计算竞速的生成块的矿工共同组成。在该系统中，用户使用私钥完成对已有资产（比特币）的转移，形成有效的交易递交到比特币构建的去中心化网络中；而矿工作为网络中区块的生成者，为了获得建块的奖励和纳入交易后的交易费，将有效的交易纳入新的区块，并使用自己的计算资源不断尝试下一个区块的构建；当某个矿工率先完成下一区块的创建时，会将新的区块立即广播给网络中的其它矿工，待他们验证通过后会在被接收的区块上进行一下区块产生的竞速过程。
@@ -197,7 +254,7 @@ X.509 PKI包含了证书吊销列表（CRL)标准\supercite{cooper2008internet}�
 
 \begin{figure}[!htbp]
  	\centering
- 	\includegraphics[width = 0.8\textwidth]{img/block_structure}
+ 	\includegraphics[width = 0.9\textwidth]{img/block_structure}
  	\caption{区块结构}\label{fig:block_structure}
 \end{figure}
 
@@ -242,44 +299,103 @@ X.509 PKI包含了证书吊销列表（CRL)标准\supercite{cooper2008internet}�
 
 区块链网络中的节点需要对新生成块中的交易及顺序达成共识，从而达到相同的状态，否则任何节点都可以产生分支而导致分叉。如果网络中的节点各自拥有不同的状态，那么该网络就无法对所有操作做出相同的判断，这个系统就不能协同运行下去。在一个分布式的p2p网络中，在没有第三方协调分歧的情况下，就需要有一种机制来保证每个节点可以达到相同的状态，而区块链上的共识机制就解决这一问题的，保证网络中各个节点的一致性。
 
-在理想的情况下，所有的验证节点对下一个区块中的交易顺序进行投票，根据大多数人的选择来确定下一区块如何产生。但是在一个公开且没有身份管控的开放网络中，任何人都可以自由的加入，将会遭受到女巫攻击\supercite{douceur2002sybil}:单一节点可以拥有多个身份表示，通过控制系统中的大部分节点来左右网络向对自己有利的方向进行。也就是说，少数的个体可以通过女巫攻击完成对整个网络的控制。
+在理想的情况下，所有的验证节点对下一个区块中的交易顺序进行投票，根据大多数人的选择来确定下一区块如何产生。但是在一个公开且没有身份管控的开放网络中，任何人都可以自由的加入，将会遭受到女巫攻击\cite{douceur2002sybil}:单一节点可以拥有多个身份表示，通过控制系统中的大部分节点来左右网络向对自己有利的方向进行。也就是说，少数的个体可以通过女巫攻击完成对整个网络的控制。
 
-比特币通过提高产生块的计算量来解决这一问题，使得在网络中添加多个实体并不能发起女巫攻击，因为对于单个实体而言，其计算资源是有限的。更具体一点，网络中的任意节点都可以去产生下一个块，但是其需要找到一个正确的随机值(nonce)填入到区块的头部，使得产生块的哈希拥有至少指定数量的前导零\supercite{antonopoulos2014mastering}。任何节点都可以对这个问题进行尝试求解，也就是所谓的工作量证明（proof of work)，来完成对下一区块的构建\supercite{nakamoto2008bitcoin}。在该过程中使用的是单向哈希函数，当一个节点宣称自己找到一个解的时候，其它节点很容易的去验证是否符合要求，但在给出目标的时候却无法直接确定输入应该是什么，只能通过不断尝试来玩寻求答案。
+比特币通过提高产生块的计算量来解决这一问题，使得在网络中添加多个实体并不能发起女巫攻击，因为对于单个实体而言，其计算资源是有限的。更具体一点，网络中的任意节点都可以去产生下一个块，但是其需要找到一个正确的随机值(nonce)填入到区块的头部，使得产生块的哈希拥有至少指定数量的前导零\cite{antonopoulos2014mastering}。任何节点都可以对这个问题进行尝试求解，也就是所谓的工作量证明（proof of work)，来完成对下一区块的构建\cite{nakamoto2008bitcoin}。在该过程中使用的是单向哈希函数，当一个节点宣称自己找到一个解的时候，其它节点很容易的去验证是否符合要求，但在给出目标的时候却无法直接确定输入应该是什么，只能通过不断尝试来玩寻求答案。
 
 依照上述方案，当网络中的节点同时计算出下一个块时，依旧有可能存在分叉的情况。但这种分叉并不会带来影响，因为比特币中的工作量证明机制规定节点应该在工作量最大的链上进行下一区块的产生，而两个分叉的区块基本上不可能同时产出下一个块，先产生块的分支将会成为网络中被网络中节点选中的链，会有更大的几率成为更长的链，这使得网络又恢复到了统一的状态。
 
-在比特币中使用的哈希算法是SHA-256，其它的哈希算法如Blake-256和scrypt也在被使用，同时还有一些共识机制中混入多种哈希算法。
+%在比特币中使用的哈希算法是SHA-256，其它的哈希算法如Blake-256和scrypt也在被使用，同时还有一些共识机制中混入多种哈希算法。
 
-工作量证明的方式虽然简单有效，但是其需要很多计算资源才能进行区块的产生，并且大量的计算导致能源浪费。权益证明（proof-of-stake)\supercite{vasin2014blackcoin}是另外一种替代POW的共识算法，根据节点的账户余额来决定下一块的生成权；与POW相比，POS拥有自己优势和劣势，并且其应用在起来也十分的复杂。
+工作量证明的方式虽然简单有效，但是其需要很多计算资源才能进行区块的产生，并且大量的计算导致能源浪费。权益证明（proof-of-stake)\cite{vasin2014blackcoin}是另外一种替代PoW的共识算法，根据节点的账户余额来决定下一块的生成权；DPOS则对PoS进行了一定的改进，让区块链上的用户通过自己持有的账户余额进行信任节点选取，选择自己信任的节点进行区块链的构建。这两种共识算法与PoW相比，都能在开放网络下工作，同时还可以降低能源消耗。另外一些典型的共识算法可以参见表\ref{table:consensus}。
 
-空间和时间一直是两个对立面，很多算法为了降低时间复杂度不得不牺牲大量空间，最近另外一种名为容量证明共识机制也被很多研究者讨论。容量证明\supercite{ateniese2014proofs}的原理是需要大量的空间去寻求一个谜题的答案，如果能够给出给定问题的解，那么证明其拥有住够多的空间。具体而言，容量证明会基于矿工的公钥进行初始化，这将耗费矿工大量的磁盘空间，并将初始化的相关内容存储在矿工的计算机中；其后在挖矿的过程中，需要对区块链上的谜题进行求解，每个矿工根据本地存储相关内容，通过对磁盘的扫描获得对应的解，并完成区块的生成。以上两个过程分别是初始化过程和挖矿过程，值得注意的是，初始化过程是一个很慢的过程，单个矿工可能需要耗费数天来完成初始化，这样做的目的为了防止提过快速的计算硬件来替代存储；对于挖矿过程而言，是一个极快的过程，只需要对磁盘进行扫描即可，并不需要像工作量证明那样耗费大量的能源。随着硬件的运算能力越来越高，工作量证明的方式从原有的CPU挖矿已经转变成ASIC挖矿，使用容量证明的方式可以抗ASIC挖矿，这也是广大研究者对其感兴趣的原因。
+
+\begin{table}[h] %开始一个表格environment，表格的位置是h,here。
+\centering   
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+\begin{tabular}{p{1.2cm}|p{1.8cm}p{1.8cm}p{2cm}p{2cm}p{2cm}p{2.2cm}} %设置了每一列的宽度，强制转换。  
+ 
+\hline  
+ & PoW\cite{nakamoto2008bitcoin} & PoS\cite{vasin2014blackcoin} &  PBFT\cite{castro1999practical} & DPOS\cite{larimer2014delegated} & Ripple\cite{schwartz2014ripple} & PoC\cite{ateniese2014proofs} \\
+\hline
+%\tabincell{l}{网络\\类型} 
+网络类型& 开放 & 开放 & 准入 & 开放 & 开放 & 开放 \\
+% \hline 
+能耗 &  高 & 一般 & 低 & 一般 & 低 & 低 \\
+% \hline
+容错能力 & < 33.3\%算力\cite{eyal2014majority} & < 51\%股份 & < 33.3\%恶意节点 & < 51\%验证节点 & < 20\%UNL恶意节点 & < 51\% 容量 \\
+% \hline
+实例 & Bitcoin & Peercoin & Hyperledger Fabric & Bitshares & Ripple & Burstcoin \\
+ 
+\hline  
+\end{tabular}  
+\caption{典型的共识算法对比}\label{table:consensus} %显示表格的标题 
+\end{table}  
+
+
+空间和时间一直是两个对立面，很多算法为了降低时间复杂度不得不牺牲大量空间，最近另外一种名为容量证明共识机制也被很多研究者讨论。容量证明\cite{ateniese2014proofs}的原理是需要大量的空间去寻求一个谜题的答案，如果能够给出给定问题的解，那么证明其拥有住够多的空间。具体而言，容量证明会基于矿工的公钥进行初始化，这将耗费矿工大量的磁盘空间，并将初始化的相关内容存储在矿工的计算机中；其后在挖矿的过程中，需要对区块链上的谜题进行求解，每个矿工根据本地存储相关内容，通过对磁盘的扫描获得对应的解，并完成区块的生成。以上两个过程分别是初始化过程和挖矿过程，值得注意的是，初始化过程是一个很慢的过程，单个矿工可能需要耗费数天来完成初始化，这样做的目的为了防止提过快速的计算硬件来替代存储；对于挖矿过程而言，是一个极快的过程，只需要对磁盘进行扫描即可，并不需要像工作量证明那样耗费大量的能源。随着硬件的运算能力越来越高，工作量证明的方式从原有的CPU挖矿已经转变成ASIC挖矿，使用容量证明的方式可以抗ASIC挖矿，这也是广大研究者对其感兴趣的原因。
 
 
 \subsection{智能合约}
 
-智能合约的概念于1994年被Nick Szabo提出\supercite{szabo1996smart}，是一种旨在以信息化方式传播、验证或执行合同的计算机协议，允许在没有可信第三方的情况下进行交易，完成的交易将是可追溯且不可逆的。Szabo建议将合同的条款转换成代码，并将代码放置在特定的软件或者硬件环境中运行，减少交易方对可信中介的依赖，以及第三方的避免不端行为或者意外操作。由于一般网络中缺少可信的执行方，使得智能合约在提出之后并没有被广泛应用，而区块链提供了可信的执行环境，因此智能合约在区块链出现之后逐渐被火热起来。
+智能合约的概念于1994年被Nick Szabo提出\cite{szabo1996smart}，是一种旨在以信息化方式传播、验证或执行合同的计算机协议，允许在没有可信第三方的情况下进行交易，完成的交易将是可追溯且不可逆的。Szabo建议将合同的条款转换成代码，并将代码放置在特定的软件或者硬件环境中运行，减少交易方对可信中介的依赖，以及第三方的避免不端行为或者意外操作。由于一般网络中缺少可信的执行方，使得智能合约在提出之后并没有被广泛应用，而区块链提供了可信的执行环境，因此智能合约在区块链出现之后逐渐被火热起来。
 
 在区块链的环境下，智能合约是存储在区块链上的脚本。由于智能合约存在于链上，每个智能合约会拥有独一无二的地址，并通过发起对相应地址的交易来实现对智能合约的调用。收到出发交易后，智能合约将会在每个节点上按照合约的设定，自动独立地执行合约内容。事实上在每个节点上都运行着一个虚拟机(VM)来执行合约代码，区块链网络充当着分散式VM的角色。
 
 区块链技术最开始仅仅是用于转账交易的记录，而智能合约的应用使得在区块链上可以开发出功能更加丰富的应用。用户根据自身的需求，使用智能合约语言将需要的逻辑操作编写成合约代码，并以交易的形式发布到区块链上，该步骤即为智能合约的书写和部署。当智能合约存在于区块链上之后，用户就可以向合约的地址发送交易来调用合约，完成合约内容的执行，即智能合约的调用。
 
+%some link for table
+% https://medium.com/@philippsandner/comparison-of-ethereum-hyperledger-fabric-and-corda-21c1bb9442f6
+% traditional contracts and smart contracts https://www.blockchains-expert.com/en/are-smart-contracts-ready-for-mass-adoption/
+% https://steemit.com/cryptocurrency/@sudipn749/crypto-smart-contract-comparison-table
+% https://www.jelurida.com/sites/default/files/blockchain-comparison.pdf
 
-不同区块链平台合约语言的自身性质将决定智能合约能够实现的操作，如比特币上使用的基于堆栈的脚本语言，指令集小并且不支持循环等复杂运算，可以实现的功能就很有限。从以太坊之后的区块链平台，基本上都拥有图灵完备的合约语言，能够实现各种应用逻辑，极大的扩展了区块链本身的功能，可以应用在数字货币之外的场景。特别是对于金融领域、智能资产、托管支付等许多场景都能通过智能合约来实现。区块链为智能合约的执行提供了可信的环境，而智能合约则给区块链赋予了更加宽广的应用场景。
+% An empirical analysis of smart contracts:
+% platforms, applications, and design patterns
+%https://github.com/Overtorment/awesome-smart-contracts
+\begin{table}[!h] %开始一个表格environment，表格的位置是h,here。
+\centering   
+\begin{tabular}{|l|l|l|l|l|} %设置了每一列的宽度，强制转换。  
+ 
+\hline  
+平台名称 & 合约引擎 & 合约语言 &  是否可编程 & 是否图灵完备 \\
+\hline
+\hline
+Bitcoin\cite{nakamoto2008bitcoin} & Bitcoin script & Ivy-lang, Balzac & 否 & 否 \\
+\hline
+Ethereum\cite{buterin2013ethereum} & EVM & Solidaty & 是 & 是 \\
+\hline
+Byteball\cite{churyumov2016byteball} & Byteball & JSON & 是 & 否 \\
+\hline
+hyperledger\cite{cachin2016architecture} & Sandbox & Go, Java, node.js & 是 & 是 \\
+\hline 
+EOS & EVM/eWASM & C/C++ & 是 & 是 \\
+
+
+ 
+\hline  
+\end{tabular}  
+\caption{典型智能合约平台}\label{table:smart_contract} %显示表格的标题 
+\end{table}  
+
+不同区块链平台在实现智能合约功能时，选取的合约执行引擎和合约语言将直接决定智能合约能够实现的操作，比较典型的平台如表\ref{table:smart_contract}所示。比特币上使用了基于堆栈式的脚本语言，指令集小并且不支持循环等复杂运算，是非图灵完备的；同时，可以认为比特币上的智能合约是脚本指令的组合，是不可编程的。以太坊之后的区块链平台，基本上都拥有图灵完备的合约语言，各个平台都拥有相应的合约引擎以完成合约的执行；与比特币相比，其还具有可编程的特性。通过智能合约的可编程特性，在这些平台上可以完成更多的应用逻辑实现，极大的扩展了区块链本身的功能，可以应用在数字货币之外的场景。特别是对于金融领域、智能资产、托管支付等许多场景都能通过智能合约来实现。区块链为智能合约的执行提供了可信的环境，而智能合约则给区块链赋予了更加宽广的应用场景。
 
 
 
-\subsection{与PKI相关的应用}
+
+
+\subsection{区块链在PKI中的应用}
 
 
 
 
 %turn a blcokchain into PKI
-由于PKI系统中的信任是基于第三方中心化的CA，当单个CA被攻击之后，将会导致整个系统的处于危险之中，同事该系统中提供的服务都存在着单点失效（POF）的风险。一些研究希望通过将区块链技术应用在PKI系统中，弥补现有体系中的一些缺陷，例如在\parencite{baldi2017certificate}中，将撤销的证书存储在区块链上，提供更加可靠的证书验证服务，可以避免传统OSCP中单点失效的问题。IKP\supercite{matsumoto2016ikp}方案利用以太坊智能合约，将PKI中证书相关的操作都转移到区块链上，记录证书的申请、签发以及吊销过程，让PKI中的各个步骤都是公开可审计的，此时区块链相当于是公开且不可篡改的日志服务器，供大家审计PKI系统中的所有操作。
+由于PKI系统中的信任是基于第三方中心化的CA，当单个CA被攻击之后，将会导致整个系统的处于危险之中，同事该系统中提供的服务都存在着单点失效（POF）的风险。一些研究希望通过将区块链技术应用在PKI系统中，弥补现有体系中的一些缺陷，例如在\parencite{baldi2017certificate}中，将撤销的证书存储在区块链上，提供更加可靠的证书验证服务，可以避免传统OSCP中单点失效的问题。IKP\cite{matsumoto2016ikp}方案利用以太坊智能合约，将PKI中证书相关的操作都转移到区块链上，记录证书的申请、签发以及吊销过程，让PKI中的各个步骤都是公开可审计的，此时区块链相当于是公开且不可篡改的日志服务器，供大家审计PKI系统中的所有操作。
 
 %blockstack?? or ETHIKS or CONIKS
 
 
-Certcoin\supercite{fromknecht2014decentralized}借鉴Namecoin实现了一个基于区块链的PKI系统，其通过默克尔哈希树来完成对身份信息的存储并通过Kademlia DHT完成快速查询。Nidaba\supercite{rystsovnidaba}则从分布式PKI的可扩展性和证书操作的代价出发，基于区块链提出了一套完整的架构；SCPKI\supercite{al2017scpki}利用web-of-trust模型以及以太坊上的智能合约，提出了一种去中心化且透明的方案，保证异常证书被签发时能够及时的被检测到。
+Certcoin\cite{fromknecht2014decentralized}借鉴Namecoin实现了一个基于区块链的PKI系统，其通过默克尔哈希树来完成对身份信息的存储并通过Kademlia DHT完成快速查询。Nidaba\cite{rystsovnidaba}则从分布式PKI的可扩展性和证书操作的代价出发，基于区块链提出了一套完整的架构；SCPKI\cite{al2017scpki}利用web-of-trust模型以及以太坊上的智能合约，提出了一种去中心化且透明的方案，保证异常证书被签发时能够及时的被检测到。
 
 
 

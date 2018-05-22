@@ -3,16 +3,16 @@
 
 \chapter{域名鉴权系统设计与实现}
 
-本章将给出本文提出方案的一种实现方法，首先对方案实现的系统设计进行阐述，叙述实现本方案的方法以及本文选择的实现方式；其后给出系统实现的模块模块设计，完成系统实现后相关的测试和分析。
+本章将给出本文提出方案的一种实现方法，首先对方案实现的系统设计进行阐述，叙述实现本方案的方法以及本文选择的实现方式；其后给出系统的模块设计，实现并完成对系统的功能性测试及分析。
 
 \section{系统设计}
 
-本章将对方案实现的整体系统进行描述，涉及到系统中的各个角色要求和功能；然后给出系统实现的整体架构，从上层透视系统中的各个模块的功能和信息交互；最后给出实现本系统的方式建议和本文所采用的方法及其原因。
+本小节将对方案实现的整体系统进行描述，涉及到系统中的各个角色要求和功能；然后给出系统实现的架构，从上层透视系统中的各个模块的功能和信息交互；最后讨论实现本系统的方式以及本文所采用的方法和原因。
 
 \subsection{系统角色}
 
 
-在方案设计的章节中，我们通过对现有PKI系统中相关实体的描述，结合方案设计的目标和相关的操作，在实现过程中涉及的实体主要包括以下四类：作为证书申请者的用户(即域名）、依赖方、参与到系统中的验证节点、以及区块链的全节点。
+通过上一小节中对方案的概述可以知道，在实现过程中涉及的实体主要包括以下四类：作为证书申请者的用户(即域名）、依赖方、参与到系统中的验证节点、以及区块链的全节点。
 
 % 根据方案设计中的内容，不同实体加入到本系统中拥有各自的目的；并且对于不同实体，其对本系统起到的作用和能够完成的操作也各不相同，下面将对它们加入本系统的目的和存在的意义进行介绍。
 
@@ -20,30 +20,30 @@
 
 域名作为本方案的用户，其希望通过本系统完成对自己可信CA的控制，达到防止未经允许的恶意CA对其签发证书的目的。
 
-在本系统中，所有的数据都是通过区块链来存储的，域名和所有参与者一样在区块链上的身份都是不具有代表性。为了建立域名在区块链上的身份(公钥或者地址)和自身的联系，需要通过上一章中设计的身份鉴权方案进行身份的绑定；在其完公钥和自身身份的绑定后，就可以通过区块链上的身份来完成对域名标识的信任CA控制，在区块链上对可信CA列表进行管理操作。综上，在域名在本系统需要完成两个操作，其一是在区块链上完成身份绑定操作；其二是完成可信CA列表的管理操作。
+在本系统中，所有的数据都是通过区块链来存储的，域名和所有参与者一样在区块链上的身份都是不具有代表性。为了建立域名在区块链上的身份(公钥或者地址)和自身的联系，需要通过上一章中设计的身份鉴权方案进行身份的绑定；在其完公钥和自身身份的绑定后，就可以通过区块链上的身份来完成对域名信任CA的控制。所以，在域名在本系统需要完成两个操作，其一是在区块链上完成身份绑定操作；其二是完成可信CA列表的管理操作。
 
 
 \noindent\textbf{依赖方}
 
-依赖方通过浏览器在PKI系统完成的通信工作，需要对证书的有效性进行检查。在本方案中，需要通过区块链进一步确认证书是否被合理的签发，为依赖方提供证书的进一步检查，达到其不被恶意签发证书所欺骗的作用。
+依赖方通过浏览器获取证书并建立安全通信时，需要对证书的有效性进行检查。在本方案中，需要通过区块链进一步确认证书是否被合理的签发，提供证书的进一步检查，达到不被恶意签发证书所欺骗的作用。
 
-在本系统中，依赖方所需要完成的操作相对比较简单，只需要本系统中的区块链网络中获取通信实体的可信CA列表即可，然后与收到的证书签发方进行对比，验证其是否存在与可信CA列表之中，如果不存在则需要向依赖方发出警告提示。
+在本系统中，依赖方所需要完成的操作相对比较简单，只需要从区块链网络中获取通信实体的可信CA列表，然后与收到证书的签发方进行对比，验证其是否存在与可信CA列表之中，如果不存在则需要向依赖方发出警告提示。
 
 
 \noindent\textbf{验证节点}
 
 验证节点加入到本系统中的目的是为了获取验证过程中产生的奖励。
 
-验证节点在本系统起着至关重要的作用，是否有住够多的验证节点加入到本系统中，决定着本系统是否能够有效的运行下去。在本系统中，验证节点需要对域名发起的身份验证请求进行验证，帮助它们完成区块链上身份与域名真实身份的绑定操作。根据方案设计可知，验证节点为了自身利益，需要实时的监控区块链上发起的验证交易，判断自己是否能够成为验证节点并获得相应的奖励，所以验证节点在本方案中需要完成操作包括监控区块链上的交易和对交易的验证。
+验证节点在本系统起着至关重要的作用，是否有住够多的验证节点加入到本系统中，决定着本系统是否能够有效的运行下去。在本系统中，验证节点需要对域名发起的身份验证请求进行验证，帮助它们完成区块链上身份与域名真实身份的绑定操作。根据方案设计可知，验证节点为了自身利益，需要实时的监听区块链上发起的验证交易，判断自己是否能够成为验证节点并获得相应的奖励，所以验证节点在本方案中需要完成操作包括监听区块链上的交易和对交易的验证。
 
 \noindent\textbf{全节点}
 
 全节点加入到本系统的目的是为了完成对区块链的维护，从而获得相应的奖励。
 
-全节点作为区块链系统中的完整节点，实时的监控整个网络中的所有交易，并尝试这些交易打包到最新的区块链中去。每当完成一个区块的创建，将会获得区块链挖矿所分配的奖励。对于本系统而言，它们是底层区块链平台的维护者，为上面的所有实体提供了基础服务。
+全节点作为区块链系统中的完整节点，实时的监控整个网络中的所有交易，并尝试将这些交易打包到最新的区块中。每当完成一个区块被创建，创建者将会获得挖矿所对应的奖励。对于本系统而言，它们是底层区块链平台的维护者，为上面的所有实体提供了基础服务。
 
 
-在系统中的单个实体可以扮演以上的单个或者多个角色，比如域名作为本系统中的用户，可以成为本系统中的验证节点或者全节点，为本系统正常运行做出贡献的同事，也可以从中获得相应的奖励。普通的网页游览用户，通过浏览器进行网页游览并发起对域名证书的二次验证，确保自身的权益，同时也可以成为本系统中的验证节点和全节点。
+在系统中的单个实体可以扮演以上的单个或者多个角色，比如域名作为本系统中的用户，可以成为本系统中的验证节点或者全节点，为本系统正常运行做出贡献的同时，也可以从中获得相应的奖励。普通的依赖者，通过浏览器进行网页游览并发起对域名证书的二次验证，确保自身的权益，同时也可以成为本系统中的验证节点和全节点。
 
 
 
@@ -64,11 +64,11 @@
 
 
 
-在本系统中，区块链是整个系统的重心，所有参与到系统中的角色都要通过其进行关联。不同的角色之间需要使用不同的工具来完成与区块链网络的交互，依赖方在传统PKI系统中使用的是浏览器来完成对证书的检验，同样，在本系统也依赖与浏览器中的插件来完成对证书的二次验证；对于域名而言，需要有相应的客户端来与区块链进行交互，完成验证请求的发布和相关验证信息的部署；验证节点同样需要有相应的客户端来获取区块链上所提交的验证请求，并通过客户端来判断自己是否能够完成验证请求，对验证请求进行响应；作为维护区块链的全节点，则直接通过区块链的客户端进行区块链维护工作即可。
+在本系统中，区块链是整个系统的重心，所有参与到系统中的角色都要通过其进行关联。不同的角色之间需要使用不同的工具来完成与区块链网络的交互，依赖方在传统PKI系统中使用的是浏览器来完成对证书的检验；同样，在本系统也依赖与浏览器中的插件来完成对证书的二次验证。对于域名而言，需要有相应的客户端来与区块链进行交互，完成验证请求的发布和相关验证信息的部署；验证节点同样需要有相应的客户端来获取区块链上所提交的验证请求，并通过客户端来判断自己是否能够完成验证请求，对验证请求进行响应；作为维护区块链的全节点，则直接通过区块链的客户端进行区块链维护工作即可。
 
 \subsection{实现方式}
 
-本文所提出的方案是依托于区块链及其上面的用户实体的，所以必须需要一个区块链平台才能完成上述系统的构建，实现本文给出方案。在我看来，实现以上系统有两种方式：一种是利用已有的区块链平台，通过其上的智能合约来完成本文给出方案的相关逻辑和操作；另外一种方式是重新构建一个全新的区块链平台，依据本文中给出方案去设计区块链平台的相关功能和交易，完成上述实体之间的信息交互。
+本文所提出的方案是依托于区块链及其上面的用户实体的，所以必须需要一个区块链平台才能完成上述系统的构建，实现本文给出方案。实现以上设计的系统有两种方式：一种是利用已有的区块链平台，通过其上的智能合约来实现本文给出方案的相关逻辑和操作；另外一种方式是重新构建一个全新的区块链平台，依据本文中给出方案去设计区块链平台的相关功能和交易，完成上述实体之间的信息交互。
 
 以上提到的两种方式都可以完成本系统的构建，且只是影响该系统中的底层区块链的构建，对上层如域名、依赖方以及验证节点并没有实质性的影响，仅仅是通过不同的方式去访问不同的区块链网络。但是两种不同的实现方式各有利弊额，如表\ref{cmpMethod}所示。
 
@@ -87,15 +87,15 @@
 \caption{实现方式对比}\label{cmpMethod} %显示表格的标题 
 \end{table}  
 
-基于智能合约的方式相比于创建新链而言，实现起来可能更加容易，不需要对区块链的底层去进行修改，只需要在智能合约中完成相关功能和模块即可，所以难度更小；这也意味着，书写的代码也要少一些，工程量将更小。由于基于现有的区块链平台去开发智能合约，该平台一般情况下已经积累了一定的用户，很多节点已经在上面进行区块链的维护；而新开发一条链需要一段时间才能有住够多的用户加入到其中，能够保证该系统在创建初始就可以安全有效的进行下去，就系统建立的速度而言，基于智能合约方式更加高效。
+基于智能合约的方式相比于创建新链而言，实现起来更加容易，不需要对区块链的底层如交易结构、协议等进行设计和修改，仅在智能合约层面完成各个实体的交互逻辑即可，因此实现难度更小；同时，由于不需要从底层对一个区块链平台进行设计或者修改，从智能合约层面出发来完成也意味着工程量更低。从区块链网络构建速度来考虑，重新构建一个链需要时间去推广并纳入足够多的用户，保证其平台的稳定性；而基于智能合约则可以选择用户较多已有平台(如以太坊)，构建起整个区块链底层网络更加迅速。
 
-但是，基于智能合约的方式也存在着一些缺点，主要表现在性能、系统的独立性和全节点维护代价方面。现有支持智能合约的公链性能都很低，并且其上还充斥这其它智能合约的交易，所以在其上开发智能合约会直接导致本系统的请求并不能及时的被处理，性能会比较低下；而创建一条新链，这可以通过一系列优化来提高性能。另外一个问题就是整个系统的独立性并不好，依赖于底层的区块链平台，如果该平台出现任何问题，那么将直接影响到本系统的正常工作；最后是全节点付出的代价问题，基于智能合约需要维护额外的区块内容，而新建的链的方式将大大减少矿工所付出的代价。
+基于智能合约方式的缺点主要表现在性能、系统的独立性和全节点维护代价方面。现有支持智能合约的公链性能都很低，比如以太坊每秒只能处理大概30笔交易；而创建一条新链，可以根据本系统的需求去设计并改进区块链底层，提升自己的性能。另外一个问题就是整个系统的独立性并不好，严重依赖于底层的区块链平台；如果该平台出现任何问题，那么将直接影响到本系统的正常工作。最后是全节点付出的代价问题，基于智能合约需要维护额外的区块内容，而新建的链的方式将只需要维护本系统中的相关交易，极大的减少全节点付出的代价。
 
 本文将选择基于智能合约的方式实现，选择的区块链平台为以太坊，身份验证方案选择基于验证次数的方案。
 
 
 
-\section{模块设计}
+\section{模块设计与实现}
 %每个模块都画一个图，写清楚介入数据以及返回数据内容
 
 
@@ -136,9 +136,11 @@
 \end{itemize}
 
 
-% \subsubsection{模块接口}
+\subsubsection{模块接口}
 
 % 根据智能合约模块的功能知道，本模块需要接收域名的认证请求、验证节点的验证信息和检举信息以及域名对信任CA列表的修改、其它实体对信任CA列表的查询，本模块需要提供的接口如表\ref{table:smartContractInterface}所示。
+
+根据本模块的功能，设计相关的接口如表\ref{table:smartContractInterface}所示。
 
 \begin{table}[h] %开始一个表格environment，表格的位置是h,here。   
 \centering
@@ -163,35 +165,43 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 % 通过以上接口，本系统中的角色与区块链进行交互，完成信息的获取和修改。
 
 
-% \begin{itemize}
-% 	\item 
-% 	\noindent\text{认证请求接口}
-% 	%面向对象，需要提交内容，返回信息，达到什么样的目的。
+\subsubsection{模块实现}
 
-% 	该接口面向的对象为域名，调用需要提供的数据包括自身的公钥和域名。
+本模块的实现依托于以太坊上的智能合约，使用Solidity语言编程完成上述接口的功能。在智能合约中，用户的身份是以地址表示的，需要完成与域名实体的认证与绑定，并在其上进行信任列表的存储；所以在智能合约中设计了存储域名的数据结构，将存储域名自身相关的信息和认证相关的基本信息，并使用Solidity中的$mapping$数据类型完成以太坊地址与域名之间的对应；同时，在方案中还涉及到一些例如验证次数、验证时长等系统参数，也需要在智能合约中以$constant$类型进行申明；以上提及的数据结构和重要变量如下\ref{code:contract_var}所示。
 
-% 	\item
-% 	\noindent\text{检举接口}
+\begin{lstlisting}[caption={域名数据结构和重要变量}, label={code:contract_var}]
+    struct Domain {
+        string name; //域名名称
+        uint count;  //验证次数
+        string trustCAs;  //信任CA
+        uint stBlock;  //验证开始的区块
+        address[] validator;  //验证者列表
+        address addr;  //域名地址
+        bool isEntity; // flag 
+    }
+    mapping(address => Domain) reg_domain; //待认证域名
+    mapping(string => Domain)  auth_domain; //已认证域名
+    //some constant
+    uint constant auth_times = 10; //目标验证次数
+    uint constant limit_blocks = 100; //验证期限
+\end{lstlisting}
 
-% 	该接口面向的对象为验证节点，调用需要提供的数据包括自身的公钥和检举绑定的公钥和域名。
+$register$接口需要接收用户传入的绑定地址和域名，其后在智能合约中将其实例化为$Domain$变量，并在$reg\_domain$中完成地址和域名实例的关联。根据上一章的方案设计，绑定请求被接收的区块信息需要被用于验证信息的生成；而以太坊智能合约中可以通过$block$的变量来获取交易执行区块的相关信息，这里将$block.number$即区块号记录赋值给域名变量的验证开始区块；代码实现如\ref{code:contract_reg}所示。
 
-% 	\item
-% 	\noindent\text{验证接口}
+\begin{lstlisting}[caption={register接口部分实现}, label={code:contract_reg}]
+    function register(address addr, string domainName) { 
+        reg_domain[addr].name = domainName; //域名名称
+        reg_domain[addr].count = 0; //初始化认证次数为0
+        reg_domain[addr].trustCAs = ""; //初始化信任CA为空
+        reg_domain[addr].stBlock = block.number; //设置区块为当前区块号
+        reg_domain[addr].addr = addr; //设置绑定的地址
+        reg_domain[addr].isEntity = true; //flag
+        
+        ... //some other operations
+    }
+\end{lstlisting}
 
-% 	该接口面向的对象为验证节点，调用该接口前需要获取验证者在网络中放置的验证信息，并且需要在本地产生一个相应的用户证明，提交的内容包括验证信息、自身公钥和用户证明。
-
-% 	\item
-% 	\noindent\text{信任列表修改接口}
-
-% 	该接口面向的对象为通过验证的域名，调用该接口需要提供自身的公钥和相应的信任CA列表。
-
-% 	\item
-% 	\noindent\text{信任列表查询接口}
-
-% 	该接口面向的对象为依赖方，调用该接口需要提供查询的域名地址，将会返回该域名对应的信任CA列表。
-	
-
-% \end{itemize}
+按照上述实例，依据各个接口设计的要求和功能，在智能合约中完成对相关变量的存储和修改，实现本模块的所有功能。
 
 
 
@@ -208,7 +218,8 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 	\item 
 	\noindent\text{密钥管理}
 
-	区块链上的身份是通过公私钥对来完成控制的，所以在该模块中，需要提供密钥管理功能来对区块链上的身份进行管理。其中包括密钥的生成和保存，其中公钥将作为本系统中的地址；其次是需要在必要的时候使用私钥完成签名操作，包括对交易的签名和验证信息的签名。
+	区块链上身份是通过公私钥来管理的，所以本模块需要提供密钥管理的功能，完成对相关交易的签名；同时，在提供验证信息的过程中也需要使用到相关私钥的签名功能。
+	% 区块链上的身份是通过公私钥对来完成控制的，所以在该模块中，需要提供密钥管理功能来对区块链上的身份进行管理。其中包括密钥的生成和保存，其中公钥将作为本系统中的地址；其次是需要在必要的时候使用私钥完成签名操作，包括对交易的签名和验证信息的签名。
 
 	\item 
 	\noindent\text{发起认证请求}
@@ -232,6 +243,66 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
  	\caption{域名客户端模块流程}\label{fig:domaincli_work_flow}
 \end{figure}
 
+
+\subsubsection{模块实现}
+
+在本模块实现过程中，最主要的任务是要完成与区块链智能合约的交互。在上一模块中已经将智能合约中的接口实现，这里将给出如何使用Python脚本完成对智能合约的调用，达到客户端与区块链的信息交换。
+
+向智能合约发起的请求是通过rpc完成的，在实现过程中，需要使用到Python中的Web3库。根据书写好的智能合约，通过Remix工具生成相关的abi接口文件，作为调用智能合约的配置文件，申明了智能合约接口的相关参数，$register$接口的abi内容如\ref{code:abi_reg}所示。
+\begin{lstlisting}[caption={register接口的abi}, label={code:abi_reg}]
+	var abi =[
+	...
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "addr",
+				"type": "address"
+			},
+			{
+				"name": "domainName",
+				"type": "string"
+			}
+		],
+		"name": "register",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	...
+	]
+\end{lstlisting}
+
+其后，将abi内容实例化到Web3的相关变量中，并通过其提供的$eth$接口，就可以完成对智能合约$register$接口的调用，并在Python对该接口进一步封装，方面后面使用过程中的调用，实现代码如\ref{code:py_reg}所示。
+\begin{lstlisting}[caption={register接口封装}, label={code:py_reg}]
+def register(address, name):
+    nonce = w3.eth.getTransactionCount(wallet_address)
+    txn_dict = contract.functions.register(address, name).buildTransaction({
+        'chainId': 5777,
+        'gas': 300000,
+        'gasPrice': w3.toWei('40', 'gwei'),
+        'nonce': nonce,
+    })
+
+    signed_txn = w3.eth.account.signTransaction(txn_dict, private_key=wallet_private_key)
+    result = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+    tx_receipt = w3.eth.getTransactionReceipt(result)
+
+    count = 0
+    while tx_receipt is None and (count < 30):
+        time.sleep(10)
+        tx_receipt = w3.eth.getTransactionReceipt(result)
+        print(tx_receipt)
+
+    if tx_receipt is None:
+        return {'status': 'failed', 'error': 'timeout'}
+
+    return {'status': 'added', "txn_receipt": tx_receipt}
+	
+\end{lstlisting}
+
+对所有接口封装之后，按照上述程序逻辑，完成python脚本书写，并在与区块链交互的时候调用相关接口，完成对本模块的实现。
 
 
 
@@ -271,6 +342,10 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 \subsubsection{模块逻辑}
 
 验证节点客户端需要实时的获取区块链网络中的绑定请求，并查询相关请求的验证内容，对请求做出回应，本模块的运行逻辑如下如\ref{fig:validator_work_flow}所示。
+
+\subsubsection{模块实现}
+
+本模块的实现的技术难点和域名模块一样，需要完成与智能合约的交互；同样，使用python脚本来完成本模块的功能，使用前一模块的相同的方式与区块链进行交互。根据模块逻辑，按照上一模块的方法即可实现本模块。
 
 
 
@@ -316,6 +391,39 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 浏览器验证插件需要在游览器访问网址时获得域名的证书，同时通过智能合约的相关接口获取域名设置的信任CA列表，并与证书签发者对比，具体的流程如图\ref{fig:chrome_extension}所示。
 
+
+\subsubsection{模块实现}
+
+
+由于Chrome游览器本身对插件的支持很完善，同时本身也是日常生活中常用的游览器之一，将选着它作为插件实现的目标平台。
+
+Chrome插件作为一个由HTML、CSS、JS、图片等资源组成的功能软件，其上可以完成如书签控制、下载控制、窗口控制以及网络请求控制、各类事件监听等等操作。在本插件中主要使用到的操作将包括事件监听和窗口控制，完成对访问站点的监听，并获得该域名的证书；同时，获取该域名在区块链的信任CA列表。
+
+对于证书获取，通过调研发现已经存在获取正在访问网页证书的插件：certificate-info\cite{certificateinfo}。该插件通过监听Chrome游览器访问网页的事件，获得网页中正在访问的网址，再通过JS进行证书获取，并将证书的相关验证信息动态显示在该插件的html页面当中。
+
+在该插件之上，使用以太坊提供的的web3 JS库完成对智能合约中信任列表查询接口的调用。在通过JS调用智能合约之前，和在python中类似，需要将智能合约的abi形式初始化到JS的智能合约对象当中，为智能合约的调用提供相关接口和参数依据。同时，在调动智能合约之前，也需要设置访问以太坊网络节点、智能合约地址等信息，该函数的实现如\ref{code:fetchTrustedCAList}所示。
+
+\begin{lstlisting}[caption={获取信任CA函数实现}, label={code:fetchTrustedCAList}]
+function fetchTrustedCAList(nodeIp, nodePort, hostname){
+    var account = '0x67EC76aD62A83A32ecE695D5F7E9580c2E625b80'; 
+    var contractAddress = '0x7dd6f5b21cba0dfc0ea1de7169cedd99993e4387';
+
+    var web3 = new Web3();
+    web3.setProvider(new Web3.providers.HttpProvider("http://" + nodeIp + ":" +" nodePort"));
+
+    web3.eth.defaultAccount = account;
+
+    var Mycontract = web3.eth.contract(abiArray);
+    var contract = Mycontract.at(contractAddress); 
+    console.log("calling the smart contract...");
+
+    var ret = contract.queryTrustedCAs(hostname);
+
+    return ret;
+}
+\end{lstlisting}
+
+通过调用以上函数就可以完成信任CA列表的获取，之后对证书中的签发者进行提取，并对比是否存在信任CA列表之中，并通过JS将最终结果显示在插件的页面之上。
 
 
 % 根据本模块相关功能，需要完成以下接口：
@@ -401,7 +509,9 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 \subsection{功能测试}
 
-本小节对系统实现进行简要测试，依据系统的部署和正常调用流程，检验系统实现的正确性。具体流程如下：
+本小节对系统实现进行简要测试，依据系统的部署和正常调用流程，检验系统实现的正确性。在本测试中，通过对测试的验证节点DNS的修改，将www.baidu.com和cn.bing.com指向测试的域名服务器，已完成绑定操作；并且，将对www.baidu.com设置正确的证书签发者，对cn.bing.com设置错误的证书签发者。
+
+以下测试过程中，将给出www.baidu.com进行身份认证在域名客户端和验证客户端的相关操作，并在最后给出游览器插件对不同情况的显示结果。
 
 %可能给出不同节点加入验证完成时间
 
@@ -422,87 +532,100 @@ queryTrustedCAs & 任意实体 & 域名名称 & 可信CA列表 & 查询给定域
 
 \noindent\textbf{2. 认证接口调用}
 
-在域名客户端配置智能合约地址$0x4e60d62f8dee99d577fa8248843f0c49e4244662$，以及需要连接的区块链节点ip和端口；运行一下命令，发起验证请求服务：
+在域名客户端配置智能合约地址$0x4e60d62f8dee99d577fa8248843f0c49e4244662$，以及需要连接的区块链节点ip和端口；运行\ref{code:reg_com}命令，发起验证请求服务。
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={认证请求命令}, label={code:reg_com}]
 domain-cli reg 0x67ec76ad62a83a32ece695d5f7e9580c2e625b80 www.baidu.com
 \end{lstlisting}
 
-得到以下输出:
 
-\begin{lstlisting}
+% \begin{lstlisting}
 
-2018-05-09 09:48:31,351 :16 - domain-cli - sending the register request...
-2018-05-09 09:48:31,421 :18 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xf5e7d6b5a51e7279ed8917d88d0a36aa1174856094c5ac7b4c39d82054d05816'), 'transactionIndex': 0, 'blockHash': HexBytes('0x971344c24a7801b1645c47f885c27e258effbae5f1c20c45a2505237aa13dce2'), 'blockNumber': 2, 'gasUsed': 189579, 'cumulativeGasUsed': 189579, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x..0')})}
-2018-05-09 09:48:31,421 :22 - domain-cli - The request have been accepted!
-2018-05-09 09:48:31,421 :24 - domain-cli - waitting for register completed...
-2018-05-09 09:48:31,553 :32 - domain-cli - register completed!
-2018-05-09 09:48:31,554 :42 - domain-cli - please put 3575248931332620452 atwww.baidu.com/1851786109301171516.
-2018-05-09 09:48:31,590 :48 - domain-cli - waiting validator to complete authorization (0/10)
-...
-2018-05-09 09:50:32,660 :48 - domain-cli - waiting validator to complete authorization (9/10)
-2018-05-09 09:50:37,695 :48 - domain-cli - waiting validator to complete authorization (10/10)
-2018-05-09 09:50:37,695 :50 - domain-cli - authorization completed!
- \end{lstlisting}
+% 2018-05-09 09:48:31,351 :16 - domain-cli - sending the register request...
+% 2018-05-09 09:48:31,421 :18 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xf5e7d6b5a51e7279ed8917d88d0a36aa1174856094c5ac7b4c39d82054d05816'), 'transactionIndex': 0, 'blockHash': HexBytes('0x971344c24a7801b1645c47f885c27e258effbae5f1c20c45a2505237aa13dce2'), 'blockNumber': 2, 'gasUsed': 189579, 'cumulativeGasUsed': 189579, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x..0')})}
+% 2018-05-09 09:48:31,421 :22 - domain-cli - The request have been accepted!
+% 2018-05-09 09:48:31,421 :24 - domain-cli - waitting for register completed...
+% 2018-05-09 09:48:31,553 :32 - domain-cli - register completed!
+% 2018-05-09 09:48:31,554 :42 - domain-cli - please put 3575248931332620452 atwww.baidu.com/1851786109301171516.
+% 2018-05-09 09:48:31,590 :48 - domain-cli - waiting validator to complete authorization (0/10)
+% ...
+% 2018-05-09 09:50:32,660 :48 - domain-cli - waiting validator to complete authorization (9/10)
+% 2018-05-09 09:50:37,695 :48 - domain-cli - waiting validator to complete authorization (10/10)
+% 2018-05-09 09:50:37,695 :50 - domain-cli - authorization completed!
+%  \end{lstlisting}
 
 \noindent\textbf{3. 验证请求调用}
 
-在域名客户端配置智能合约地址$'0x4e60d62f8dee99d577fa8248843f0c49e4244662'$，以及需要连接的区块链节点ip和端口；通过对区块链的监控，当域名exmaple.com发起验证时，将运行validator-cli程序将自动发起验证，得到以下日志：
+在域名客户端配置智能合约地址$0x4e60d62f8dee99d577fa8248843f0c49e4244662$，以及需要连接的区块链节点ip和端口；运行validator-cli程序，将完成对区块链的监听，获取example.com的验证请求，并完成对其的验证工作。
 
-\begin{lstlisting}
+% \begin{lstlisting}
 
-2018-05-09 09:48:50,488 :11 - validator-cli - check new authorization request...
-2018-05-09 09:48:50,573 :21 - validator-cli - get vcode 3575248931332620452 from www.baidu.com/1851786109301171516.
-2018-05-09 09:48:50,573 :23 - validator-cli - the vcode is right, check passed!
-2018-05-09 09:48:50,573 :26 - validator-cli - waiting for new block to confirm this request...
-...
-2018-05-09 09:48:50,574 :26 - validator-cli - waiting for new block to confirm this request...
-2018-05-09 09:48:50,574 :28 - validator-cli - ready to confirm :)
-2018-05-09 09:48:50,574 :29 - validator-cli - sending confirmation requset...
-2018-05-09 09:48:50,630 :31 - validator-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xab0bcf480e2f9906aaa9c70675158236d6e912931759b768eb0d025a5e0c20d7'), 'transactionIndex': 0, 'blockHash': HexBytes('0x1a01ec45298e0167e158ef4bea077a2e0448ffdb144377f286ed4b8ff4f3c77a'), 'blockNumber': 87, 'gasUsed': 107323, 'cumulativeGasUsed': 107323, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0..0')})}
-2018-05-09 09:48:50,630 :37 - validator-cli - confirmation request sent successfully.
+% 2018-05-09 09:48:50,488 :11 - validator-cli - check new authorization request...
+% 2018-05-09 09:48:50,573 :21 - validator-cli - get vcode 3575248931332620452 from www.baidu.com/1851786109301171516.
+% 2018-05-09 09:48:50,573 :23 - validator-cli - the vcode is right, check passed!
+% 2018-05-09 09:48:50,573 :26 - validator-cli - waiting for new block to confirm this request...
+% ...
+% 2018-05-09 09:48:50,574 :26 - validator-cli - waiting for new block to confirm this request...
+% 2018-05-09 09:48:50,574 :28 - validator-cli - ready to confirm :)
+% 2018-05-09 09:48:50,574 :29 - validator-cli - sending confirmation requset...
+% 2018-05-09 09:48:50,630 :31 - validator-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0xab0bcf480e2f9906aaa9c70675158236d6e912931759b768eb0d025a5e0c20d7'), 'transactionIndex': 0, 'blockHash': HexBytes('0x1a01ec45298e0167e158ef4bea077a2e0448ffdb144377f286ed4b8ff4f3c77a'), 'blockNumber': 87, 'gasUsed': 107323, 'cumulativeGasUsed': 107323, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0..0')})}
+% 2018-05-09 09:48:50,630 :37 - validator-cli - confirmation request sent successfully.
 
-\end{lstlisting}
+% \end{lstlisting}
 
 
 \noindent\textbf{4. 信任列表修改}
 
-在域名客户端运行domain-cli query 命令查询验证请求状态；待绑定完成后，通过一下来修改信任CA列表：
+在域名客户端运行domain-cli query 命令查询验证请求状态；待绑定完成后，通过运行\ref{code:modify_ca}来修改信任CA列表。
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={信任列表修改命令}, label={code:modify_ca}]
 domain-cli modifyTrustedCAs "Symantec Corporation" 
 \end{lstlisting}
 
 
-得到如下输出：
+% \begin{lstlisting}
+% 2018-05-09 09:50:37,750 :56 - domain-cli - Sending modify Trusted CAs request...
+% 2018-05-09 09:50:37,750 :59 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0x7b39338a2d30624e339eb4b3261efa5fa09378936d2cad07c17fd5406ae40729'), 'transactionIndex': 0, 'blockHash': HexBytes('0x31a3306ce2fa4e09a9eafc5eaa3a0cf910f69b87d6c93271a2ce0df0f26b955f'), 'blockNumber': 113, 'gasUsed': 46593, 'cumulativeGasUsed': 46593, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0...0')})}
+% 2018-05-09 09:50:37,750 :63 - domain-cli - trusted CAs be modified to Symantec Corporation
+% \end{lstlisting}
 
-\begin{lstlisting}
-2018-05-09 09:50:37,750 :56 - domain-cli - Sending modify Trusted CAs request...
-2018-05-09 09:50:37,750 :59 - domain-cli - {'status': 'added', 'txn_receipt': AttributeDict({'transactionHash': HexBytes('0x7b39338a2d30624e339eb4b3261efa5fa09378936d2cad07c17fd5406ae40729'), 'transactionIndex': 0, 'blockHash': HexBytes('0x31a3306ce2fa4e09a9eafc5eaa3a0cf910f69b87d6c93271a2ce0df0f26b955f'), 'blockNumber': 113, 'gasUsed': 46593, 'cumulativeGasUsed': 46593, 'contractAddress': None, 'logs': [], 'status': 1, 'logsBloom': HexBytes('0x0...0')})}
-2018-05-09 09:50:37,750 :63 - domain-cli - trusted CAs be modified to Symantec Corporation
-\end{lstlisting}
-
-\noindent\textbf{5. 信任列表查询}
-
-在前面的操作中，我们将www.baidu.com的信任CA设置为了Symantec Corporation，和其正在使用的证书签发机构是一致的。在游览器端安装chrome插件之后，访问www.baidu.com，插件显示内容如图\ref{fig:pass}所示。
+\noindent\textbf{5. 游览器插件测试}
 
 \begin{figure}[!htbp]
  	\centering
- 	\includegraphics[scale=0.3]{img/pass}
+ 	\includegraphics[scale=0.45]{img/pass}
  	\caption{验证通过实例}\label{fig:pass}
 \end{figure}
 
+按照前面的操作，将www.baidu.com的信任CA设置为了Symantec Corporation，和其正在使用的证书签发机构是一致的。在游览器端安装chrome插件之后，访问www.baidu.com，插件显示内容如图\ref{fig:pass}所示，可以看出本次检验通过。
+
+
+
+在插件中，上面区域显示了该域名站点的检验是否通过；中间区域显示了区块链网络中获取的相关信息，包括获取的信任CA列表、查询的域名以及介入区块链网络的节点信息；下面区域显示了证书的一些重要信息：证书的组织及签发者。
+
+
 \begin{figure}[!htbp]
  	\centering
- 	\includegraphics[scale=0.3]{img/notPass}
+ 	\includegraphics[scale=0.45]{img/notPass}
  	\caption{验证未通过实例}\label{fig:notPass}
 \end{figure}
 
-在上图中，第一行表示是否通过验证，本例中通过验证；第二行表示设置的信任CA，后面内容为证书相关的信息。
+在对cn.bing.com绑定了错误的信任CA之后，访问该站点，插件显示内容如图\ref{fig:notPass}所示。由于设置的CA信任列表和其使用证书的签发者不一致，导致本次检验未通过。
 
-由于没有对www.google.com进行绑定操作，将无法查询得到信任CA列表，所以其无法通过验证，得到结果如图\ref{fig:notPass}所示。
 
-通过以上测试可以知道，通过实现的系统可以正常完成域名的身份认证已经信任CA列表的绑定；并且通过游览器插件，在访问网页是可以获得相关的验证结果。
+
+
+\begin{figure}[!htbp]
+ 	\centering
+ 	\includegraphics[scale=0.45]{img/unknowns}
+ 	\caption{未设置信任列表实例}\label{fig:unknowns}
+\end{figure}
+
+由于没有对www.google.com进行绑定操作，将无法在区块链上获得信任CA列表信息，得到结果如图\ref{fig:unknowns}所示，提示未进行信任CA列表设置。
+
+
+
+通过以上测试可以知道，通过实现的系统可以正常完成域名的身份认证以及信任CA列表的修改；并且通过游览器插件，在访问网页是可以获得相关的验证结果，本系统可以正常工作。
 
 
 
@@ -522,7 +645,7 @@ domain-cli modifyTrustedCAs "Symantec Corporation"
 
 对于以太坊上调用智能合约的交易，首先需要将交易发送到以太坊的区块中，其所需的花费被称为$transaction\ costs$，是根据数据大大小来计算的；对于交易的执行，需要根据交易的计算量来进行费用评估，被称为$execution\ costs$。在以太坊上交易费用的计量单位为$gas$，根据该\parencite{ethgasstation}可知现在$1\ gas = 8\ Gwei$。
 
-对于$exmaple.com$的绑定、验证、检举和信任列表修改请求执行消耗的代价如表\ref{table:cost}所示。
+对于$example.com$的绑定、验证、检举和信任列表修改请求执行消耗的代价如表\ref{table:cost}所示。
 
 
 \begin{table}[!h] %开始一个表格environment，表格的位置是h,here。   
