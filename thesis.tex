@@ -20,7 +20,7 @@
 % 若需按照引用顺序排序，请设置“sorting = none”。
 % 若需在排序中实现更复杂的需求，请参考 biblatex-caspervector 的文档。
 % \usepackage[backend = biber, style = caspervector, utf8, sorting = none]{biblatex}
-\usepackage[backend=biber,style=gb7714-2015, gbpub=false, giveninits = true]{biblatex}
+\usepackage[backend=biber,style=gb7714-2015, gbpub=false, giveninits = true, gbnamefmt = uppercase]{biblatex}
 
 
 %table
@@ -30,6 +30,7 @@
 % 代码
 \usepackage{listings}
 \usepackage{color}
+
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -78,7 +79,7 @@
 	cmajor = {计算机软件与理论}, emajor = {Software and Theory of Computer},
 	direction = {网络与信息安全},
 	cmentor = {关志\quad 副研究员}, ementor = {Prof.\ Zhi \ Guan},
-	ckeywords = {PKI，区块链，身份认证，密码学}, ekeywords = {PKI, blockchain, identity authentication, cryptography}
+	ckeywords = {PKI，区块链，身份认证，密码学}, ekeywords = {PKI, Blockchain, Identity Authentication, Cryptography}
 }
 % 载入参考文献数据库（注意不要省略“.bib”）。
 \addbibresource{thesis.bib}

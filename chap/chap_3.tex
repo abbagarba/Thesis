@@ -76,13 +76,13 @@
 
 \begin{enumerate}
 	\item $A$发布绑定交易$Tx_{req}(Pk_A, example.com)$到区块链上;
-	\item 根据需要绑定的信息$(Pk_A, example.com)$，计算$(Path, Chal) = F(Pk_A, example.com)$放置在自己控制的域名下，即访问$example.com/Path$即可获取到$Vcode = Sign_{Sk_A}(Chal)$值；
-	\item 验证者$B$访问域名验证A是否正确操作，如果不，发送检举交易$Tx_{rep}(Pk_B, Pk_A, example.com)$到区块链;
+	\item 根据需要绑定的信息$(Pk_A, example.com)$，计算$(Path, Chal) = F(Pk_A, example.c\\om)$放置在自己控制的域名下，即访问$example.com/Path$即可获取到$Vcode = Sign_{Sk_A}(Chal)$值；
+	\item 验证者$B$访问域名验证A是否正确操作，如果不，发送检举交易$Tx_{rep}(Pk_B, Pk_A, ex\\ample.com)$到区块链;
 	\item $A$保持验证时长$T$后，可停止该验证服务，完成绑定。
 \end{enumerate}
 
 
-在该绑定过程中，首先需要绑定者将绑定信息自己的$Pk_A$和自己的域名$example.com$发布到区块链上，将绑定身份信息展现给所有的验证节点，并根据函数$F$生成相关验证内容。我们选择哈希函数$sha256$作为函数原型，将$Pk_A$和$example.com$直接拼接后作为输入，将计算得到的256位哈希值前128位赋值给$Path$、后128位赋值给$Chal$，并且使用自己的私钥对$Chal$进行签名：
+在该绑定过程中，首先需要绑定者将绑定信息自己的$Pk_A$和自己的域名$example.c\\om$发布到区块链上，将绑定身份信息展现给所有的验证节点，并根据函数$F$生成相关验证内容。我们选择哈希函数$sha256$作为函数原型，将$Pk_A$和$example.com$直接拼接后作为输入，将计算得到的256位哈希值前128位赋值给$Path$、后128位赋值给$Chal$，并且使用自己的私钥对$Chal$进行签名：
 
 \begin{equation}\label{eqF}
 Path_{128}||Chal_{128} = sha256(Pk_A||example.com)
@@ -125,7 +125,7 @@ Vcode = Sign_{Sk_A}(Chal)
 
 \begin{enumerate}
 	\item $A$发布绑定交易$Tx_{req}(Pk_A, example.com)$到区块链上;
-	\item  A获取$Tx_{req}$所在位置区块信息$Info_{block}$，并根据其计算值$(Path, Chal) = F(Info_{rcvBlock})$放置在自己控制的域名下，及访问$example.com/Path$即可获取到$Vcode = Sign_{Sk_A}(Chal)$值；
+	\item  A获取$Tx_{req}$所在位置区块信息$Info_{block}$，并根据其计算值$(Path, Chal) = \\F(Info_{rcvBlock})$放置在自己控制的域名下，及访问$example.com/Path$即可获取到$Vcode = Sign_{Sk_A}(Chal)$值；
 	\item 根据交易$Tx_{req}$计算符合该条请求的验证者：${v_1, v_2, ... , v_k}$，假设$B$为其中一个验证者
 	\item B从$example.com/Path$获取验证内容，提交交易$Tx_{vfy}(Pk_B, Pk_A, Vcode)$ 完成验证。
 	\item 在经过$K$个验证过后，即完成绑定。
@@ -136,7 +136,7 @@ Vcode = Sign_{Sk_A}(Chal)
 
 \subsection{检举的工作机制}
 
-在一个p2p的网络中或者一个区块链的网络中，每个用户使用都是一个公钥（即地址），和自身的身份是没有任何关系的，这就是为什么需要设计公钥与域名绑定方案的原因。但是在这样的网络中，任何人都可以发起对任意域名的绑定，为了排除一些错误的绑定或者假冒的绑定，在以上给出两种不同的身份绑定方案中，都是用到了检举交易来完成对这类情况的处理。
+在一个P2P的网络中或者一个区块链的网络中，每个用户使用都是一个公钥（即地址），和自身的身份是没有任何关系的，这就是为什么需要设计公钥与域名绑定方案的原因。但是在这样的网络中，任何人都可以发起对任意域名的绑定，为了排除一些错误的绑定或者假冒的绑定，在以上给出两种不同的身份绑定方案中，都是用到了检举交易来完成对这类情况的处理。
 
 
 当一个诚实的验证节点$C$发现一个虚假的绑定时，他就可以向区块链发起检举交易，和验证交易提交的内容基本一致，只是将最后一项$Vcode$替换为需要检举绑定的域名地址，所以检举交易包含的内容为自身的公钥$Pk_C$和绑定者公钥$Pk_A$和域名$examle.com$。
@@ -254,11 +254,15 @@ Pr_2 = \prod_{i=0}^{n/2}\frac{qN-i}{N-i}
 
 所以当攻击者拥有全网$q$占比的验证节点时，完成一次恶意绑定的概率如式\ref{Pr_all}所示。
 
-\begin{align}
+\begin{equation}
+\begin{aligned}
 \label{Pr_all}  Pr_{attack} &= Pr_1 + (1-Pr_1) * Pr_2 \\
 							&= Pr_1 + Pr_2 - Pr_1 * Pr_2 \\
              				&= \prod_{i=0}^{K-1}\frac{qN-i}{N-i} + \prod_{i=0}^{n/2}\frac{qN-i}{N-i} - \prod_{i=0}^{K-1}\frac{qN-i}{N-i} * \prod_{i=0}^{n/2}\frac{qN-i}{N-i} 
-\end{align}
+\end{aligned}
+\end{equation}
+
+
 
 
 \subsubsection{拒绝绑定分析}
